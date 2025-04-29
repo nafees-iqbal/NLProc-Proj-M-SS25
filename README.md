@@ -20,6 +20,20 @@ Vector search is a technique where we:
 For small datasets, we use:
 - **Cosine Similarity** (angle-based)
 
+**How it works in this project:**
+
+After computing embeddings for all documents, we compare them using cosine similarity.
+
+```python
+from sklearn.metrics.pairwise import cosine_similarity
+
+# Compute pairwise cosine similarity between document embeddings
+similarity_matrix = cosine_similarity(embeddings)
+
+# Display similarity values
+for i, row in enumerate(similarity_matrix):
+    for j, score in enumerate(row):
+        print(f"Similarity between Document {i} and Document {j}: {score:.2f}")
 
 #### 2. FAISS-Based Vector Search
 
