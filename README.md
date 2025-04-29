@@ -27,10 +27,10 @@ After computing embeddings for all documents, we compare them using cosine simil
 ```python
 from sklearn.metrics.pairwise import cosine_similarity
 
-# Compute pairwise cosine similarity between document embeddings
+# Compute pairwise cosine similarity between text document embeddings
 similarity_matrix = cosine_similarity(embeddings)
 
-# Display similarity values
+# Show similarity values
 for i, row in enumerate(similarity_matrix):
     for j, score in enumerate(row):
         print(f"Similarity between Document {i} and Document {j}: {score:.2f}") 
@@ -52,15 +52,13 @@ For larger datasets, we use **FAISS** (Facebook AI Similarity Search), a library
 import faiss
 import numpy as np
 
-# Build FAISS index
-dimension = embeddings.shape[1]  # Get the size of the embedding vectors
-index = faiss.IndexFlatL2(dimension)  # Create an index using L2 (Euclidean) distance
-index.add(np.array(embeddings, dtype='float32'))  # Add document embeddings to the index
+# Build FAISS index data structure
+dimension = embeddings.shape[1] 
+index = faiss.IndexFlatL2(dimension)  
+index.add(np.array(embeddings, dtype='float32'))  
 
-# Encode the query
 query_embedding = model.encode([query_text])
 
-# Search the FAISS index
 D, I = index.search(np.array(query_embedding, dtype='float32'), k=3)
 
 # Display top-k search results
