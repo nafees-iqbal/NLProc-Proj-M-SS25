@@ -46,4 +46,26 @@ For larger datasets, we use **FAISS** (Facebook AI Similarity Search), a library
 - It is highly scalable and can handle millions of vectors efficiently.
 - It can also trade off a small amount of accuracy for search speed improvements.
 
+**How faiss works in this project:**
+
+```python
+import faiss
+import numpy as np
+
+# Build FAISS index
+dimension = embeddings.shape[1]  # Get the size of the embedding vectors
+index = faiss.IndexFlatL2(dimension)  # Create an index using L2 (Euclidean) distance
+index.add(np.array(embeddings, dtype='float32'))  # Add document embeddings to the index
+
+# Encode the query
+query_embedding = model.encode([query_text])
+
+# Search the FAISS index
+D, I = index.search(np.array(query_embedding, dtype='float32'), k=3)
+
+# Display top-k search results
+for idx, distance in zip(I[0], D[0]):
+    print(f"Retrieved Document {idx} with distance: {distance:.4f}")
+
+```
 
