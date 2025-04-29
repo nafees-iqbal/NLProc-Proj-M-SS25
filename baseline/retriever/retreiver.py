@@ -5,6 +5,8 @@ import faiss
 from sentence_transformers import SentenceTransformer
 import os
 from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
 
 class Retriever:
     def __init__(self, model_name="all-MiniLM-L6-v2", chunk_size=200):
@@ -38,6 +40,21 @@ class Retriever:
             for val in row:
                 print(f"{val:.2f}".ljust(20), end='')
             print()
+
+    def visualize_embeddings_pca(self, embeddings, labels):
+        pca = PCA(n_components=2)
+        pca_result = pca.fit_transform(embeddings)
+
+        plt.figure(figsize=(8, 6))
+        plt.scatter(pca_result[:, 0], pca_result[:, 1], c='skyblue')
+        for i, label in enumerate(labels):
+            plt.annotate(label, (pca_result[i, 0], pca_result[i, 1]))
+        plt.title("PCA Visualization of Text Embeddings")
+        plt.xlabel("Principal Component 1")
+        plt.ylabel("Principal Component 2")
+        plt.grid(True)
+        plt.tight_layout()
+        plt.show()
     
     def retrieve(self, query, k=3):
         query_embedding = self.model.encode([query])

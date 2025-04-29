@@ -12,5 +12,6 @@ def compare_text_samples_using_cosine_similarity(retriever, folder_path="data/te
     filenames, texts = retriever.load_document(folder_path)
     embeddings = retriever.compute_embeddings(texts)
     retriever.compare_embeddings(embeddings, filenames)
+    retriever.visualize_embeddings_pca(embeddings, filenames)
 
 compare_text_samples_using_cosine_similarity(retriever)
