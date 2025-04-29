@@ -1,17 +1,26 @@
 # RAG Project – Summer Semester 2025
 
-## Overview
-This repository hosts the code for a semester-long project on building and experimenting with Retrieval-Augmented Generation (RAG) systems. Students start with a shared baseline and then explore specialized variations in teams.
+# Week 2
+## 🔍 How Vector Search Works
 
-## Structure
-- `baseline/`: Common starter system (retriever + generator)
-- `experiments/`: Each team's independent exploration
-- `evaluation/`: Common tools for comparing results
-- `utils/`: Helper functions shared across code
+This project demonstrates how **semantic search** can be performed using **vector embeddings** — both with and without FAISS.
 
-## Getting Started
-1. Clone the repo
-2. `cd baseline/`
-3. Install dependencies: `pip install -r ../requirements.txt`
+---
 
-## Teams & Tracks
+### 🧠 What is Vector Search?
+
+Vector search is a technique where we:
+1. Convert text into **dense vectors** using a pretrained model (like `all-MiniLM-L6-v2`).
+2. Store those vectors in memory (or a FAISS index).
+3. When a user enters a query, we convert it to a vector too.
+4. We compare that query vector to all stored vectors to find the most **semantically similar** text.
+
+---
+
+### 📦 Two Methods Used in This Project
+
+#### ✅ 1. Manual Vector Search (without FAISS)
+For small datasets, we use:
+- **Cosine Similarity** (angle-based)
+- **Euclidean Distance** (distance-based)
+
