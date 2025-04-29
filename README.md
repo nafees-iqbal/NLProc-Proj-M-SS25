@@ -33,7 +33,9 @@ similarity_matrix = cosine_similarity(embeddings)
 # Display similarity values
 for i, row in enumerate(similarity_matrix):
     for j, score in enumerate(row):
-        print(f"Similarity between Document {i} and Document {j}: {score:.2f}")
+        print(f"Similarity between Document {i} and Document {j}: {score:.2f}") 
+
+```
 
 #### 2. FAISS-Based Vector Search
 
