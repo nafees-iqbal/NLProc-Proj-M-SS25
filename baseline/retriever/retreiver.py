@@ -55,6 +55,16 @@ class Retriever:
         plt.grid(True)
         plt.tight_layout()
         plt.show()
+
+    def build_faiss_index(self):
+        dim = self.embeddings.shape[1] # self.embedding is a 2D array, (self.embeddings.shape) return N (Numbers of vector) and D (dimension)
+        self.index = faiss.IndexFlatL2(dim) # create a index data structure, which will store vectors of size dim
+        self.index.add(np.array(self.embeddings, dtype='float32'))
+
+    def search_faiss(self, query_text, k=3):
+        query_embedding = self.model.encode([query_text])
+        D, I = self.index.search(np.array(query_embedding), k) # D and I both are 2D array
+        return [self.texts[i] for i in I[0]], D[0]
     
     def retrieve(self, query, k=3):
         query_embedding = self.model.encode([query])
