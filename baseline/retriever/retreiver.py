@@ -41,8 +41,6 @@ class Retriever:
     
     def retrieve(self, query, k=3):
         query_embedding = self.model.encode([query])
-        # Search in the FAISS index
         D, I = self.index.search(np.array(query_embedding), k)
-        # Return the top-k retrieved text chunks
         retrieved_chunks = [self.chunks[i] for i in I[0]]
         return retrieved_chunks
