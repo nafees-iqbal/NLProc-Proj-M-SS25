@@ -12,8 +12,10 @@ class Retriever:
     def __init__(self, model_name="all-MiniLM-L6-v2", chunk_size=200):
         self.model = SentenceTransformer(model_name)
         self.chunk_size = chunk_size
-        self.index = None
         self.chunks = []
+        self.embeddings = None
+        self.texts = []
+        self.index = None
 
     def load_document(self, folder_path):
         texts = []
@@ -23,10 +25,12 @@ class Retriever:
                 with open(os.path.join(folder_path, filename), 'r', encoding='utf-8') as file:
                     texts.append(file.read())
                     filenames.append(filename)
+        self.texts = texts
         return filenames, texts
     
     def compute_embeddings(self, texts):
-        return self.model.encode(texts) # convert text into vector embeddings
+        self.embeddings = self.model.encode(texts) # convert text into vector embeddings
+        return self.embeddings
     
     def compare_embeddings(self, embeddings, filenames):
         similarity_matrix = cosine_similarity(embeddings) # make a 2D matrix for pairwise cosine similarity
