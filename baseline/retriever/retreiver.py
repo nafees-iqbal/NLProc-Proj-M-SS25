@@ -114,8 +114,8 @@ class Retriever:
         .pkl file is used for storing and loading python's object like lists, dictionaries etc.
         """
         faiss.write_index(self.index, f"{path}.faiss")
-        with open(f"{path}_texts.pkl", "wb") as faiss:
-            pickle.dump(self.texts, faiss)
+        with open(f"{path}_texts.pkl", "wb") as f:
+            pickle.dump(self.texts, f)
 
     def load(self, path="retriever_index"):
         """

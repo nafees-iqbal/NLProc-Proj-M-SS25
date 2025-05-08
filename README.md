@@ -110,6 +110,9 @@ Later we added `add_documents()`, `query()`, `save()`, and `load()` functions in
 - **`load(path)`**  
   Load the saved FAISS index and text chunks back into memory, allowing immediate use of the retriever without rebuilding the index.
 
+## Save and Load function are called like below to reduce the operation time for same input files
+![semantic chunking strategies diagram](https://github.com/nafees-iqbal/NLProc-Proj-M-SS25/blob/main/images/save-load-utility.png?raw=true)
+
 ---
 
 After that we wrote a `test_retriever_accuracy` function in our pipeline.py with the below `query` and `expected keywords`
