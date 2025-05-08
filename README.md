@@ -9,6 +9,8 @@
 ## To run the project first run the requirements.txt to install necessary packages
 **pip install -r requirements.txt**
 
+---
+
 ## Branch Info
 
 All previous week's work and corresponding README files can be found in their respective branches.  
@@ -17,7 +19,6 @@ In the `main` branch, only the **current week's tasks** are documented in this m
 ---
 
 # Week 3
-
 
 ## Chunking strategies
 
@@ -52,18 +53,17 @@ Semantic chunking splits text based on **sentence boundaries and contextual mean
 - **Retrieval accuracy**: More relevant chunks are returned during similarity search.
 - **LLM performance**: Better prompts = better generated answers.
 
-### How It Works in Our Project
-
-- We split the text into **sentences** using `spaCy`.
-- Sentences are grouped into chunks of ~200 tokens.
-- We apply **50-token overlaps** between chunks to preserve context.
-
-This strategy balances precision, context, and retrieval speed — making it ideal for real-world RAG pipelines.
+![Semantic Chunking Workflow](https://ai.gopubby.com/content/images/2023/01/semantic_chunking_workflow.png)
 
 ---
 
-### Visual Explanation of Semantic Chunking
+### How It Works in Our Project
 
-<img src="https://github.com/nafees-iqbal/NLProc-Proj-M-SS25/blob/main/images/semantic_chunking_example.png?raw=true" alt="Semantic Chunking Diagram" width="600"/>
+- We split the text into **sentences** using `spaCy`.
+- Sentences are grouped into chunks of around 200 tokens.
+- We apply **50 token overlaps** between chunks to preserve context.
+
+---
+
 
 ---
