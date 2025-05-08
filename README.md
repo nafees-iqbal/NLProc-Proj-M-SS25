@@ -63,6 +63,34 @@ Semantic chunking splits text based on **sentence boundaries and contextual mean
 - Sentences are grouped into chunks of around 200 tokens.
 - We apply **50 token overlaps** between chunks to preserve context.
 
+**In our code we use semantic search in the below way**
+
+```python
+def semantic_chunk(self, text, max_tokens=200, overlap=50):
+        
+        doc = self.nlp(text)
+        sentences = [sent.text for sent in doc.sents]
+
+        chunks = []
+        current_chunk = []
+        current_len = 0
+
+        for sentence in sentences:
+            sent_len = len(self.nlp(sentence))
+            if current_len + sent_len <= max_tokens:
+                current_chunk.append(sentence)
+                current_len += sent_len
+            else:
+                chunks.append(" ".join(current_chunk))
+                current_chunk = current_chunk[-overlap:] + [sentence]
+                current_len = sum(len(self.nlp(s)) for s in current_chunk)
+
+        if current_chunk:
+            chunks.append(" ".join(current_chunk))
+
+        return chunks
+```
+
 ---
 
 

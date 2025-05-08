@@ -47,7 +47,6 @@ class Retriever:
                 current_len += sent_len
             else:
                 chunks.append(" ".join(current_chunk))
-                # Start new chunk with overlap
                 current_chunk = current_chunk[-overlap:] + [sentence]
                 current_len = sum(len(self.nlp(s)) for s in current_chunk)
 
