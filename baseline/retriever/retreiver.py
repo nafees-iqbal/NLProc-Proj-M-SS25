@@ -2,47 +2,96 @@ import os
 import numpy as np
 import faiss
 import pickle
+import spacy
 from sentence_transformers import SentenceTransformer
 
 class Retriever:
     def __init__(self, model_name="all-MiniLM-L6-v2"):
         """
         Initializes the Retriever with a given embedding model.
+        Loads spaCy for sentence-based semantic chunking.
         """
         self.model = SentenceTransformer(model_name)
         self.texts = []
         self.embeddings = None
         self.index = None
+        self.nlp = spacy.load("en_core_web_sm")
+
+    def semantic_chunk(self, text, max_tokens=200, overlap=50):
+        """
+        Splits the input text into semantically coherent chunks based on sentence boundaries.
+
+        This strategy improves information retrieval in RAG (Retrieval-Augmented Generation) systems
+        by preserving the meaning and context within each chunk. Unlike fixed-size splitting,
+        semantic chunking reduces the chance of splitting mid-sentence or breaking logical structure.
+
+        Parameters:
+        - text (str): Raw text to be split.
+        - max_tokens (int): Maximum token count per chunk.
+        - overlap (int): Number of overlapping tokens between chunks for context preservation.
+
+        Returns:
+        - List[str]: List of semantic chunks.
+        """
+        doc = self.nlp(text)
+        sentences = [sent.text for sent in doc.sents]
+
+        chunks = []
+        current_chunk = []
+        current_len = 0
+
+        for sentence in sentences:
+            sent_len = len(self.nlp(sentence))
+            if current_len + sent_len <= max_tokens:
+                current_chunk.append(sentence)
+                current_len += sent_len
+            else:
+                chunks.append(" ".join(current_chunk))
+                # Start new chunk with overlap
+                current_chunk = current_chunk[-overlap:] + [sentence]
+                current_len = sum(len(self.nlp(s)) for s in current_chunk)
+
+        if current_chunk:
+            chunks.append(" ".join(current_chunk))
+
+        return chunks
 
     def add_documents(self, folder_path):
         """
-        Loads .txt files from the folder, encodes them, and prepares for semantic search.
+        Loads .txt files from a folder, applies semantic chunking, encodes them into embeddings,
+        and builds a FAISS index for fast similarity search.
+
+        This function uses sentence-based chunking to ensure that each chunk is meaningful and
+        coherent. It enhances both retrieval relevance and LLM generation quality in downstream tasks.
 
         Parameters:
-        folder_path: Path to the folder containing .txt files.
+        - folder_path (str): Path to the folder containing .txt files.
         """
-        texts = []
+        all_chunks = []
         for filename in os.listdir(folder_path):
             if filename.endswith(".txt"):
                 with open(os.path.join(folder_path, filename), 'r', encoding='utf-8') as file:
-                    texts.append(file.read())
+                    text = file.read()
+                    chunks = self.semantic_chunk(text)
+                    all_chunks.extend(chunks)
 
-        self.texts = texts
-        self.embeddings = self.model.encode(texts)
+        self.texts = all_chunks
+        self.embeddings = self.model.encode(all_chunks)
         dim = self.embeddings.shape[1]
         self.index = faiss.IndexFlatL2(dim)
         self.index.add(np.array(self.embeddings, dtype='float32'))
 
     def query(self, query_text, k=3):
         """
-        Searches for the top k most relevant documents to the given query.
+        Searches for the top-k most relevant chunks to the given query.
 
         Parameters:
-        query_text: The input query string.
-        k: Number of top matches to return.
+        - query_text (str): The user query in plain language.
+        - k (int): Number of top matches to return.
 
         Returns:
-        List of top k matched texts and their distances.
+        - List[str]: Top-k matched text chunks.
+        - List[float]: Corresponding distances from the query vector.
         """
         query_embedding = self.model.encode([query_text])
         D, I = self.index.search(np.array(query_embedding, dtype='float32'), k)
@@ -50,10 +99,10 @@ class Retriever:
 
     def save(self, path="retriever_index"):
         """
-        Saves the FAISS index and associated document texts to disk.
+        Saves the FAISS index and the chunked texts to disk for reuse.
 
         Parameters:
-        path: Base filename to save the index and text data.
+        - path (str): Base path (without extension) to save index and text data.
         """
         faiss.write_index(self.index, f"{path}.faiss")
         with open(f"{path}_texts.pkl", "wb") as f:
@@ -61,10 +110,10 @@ class Retriever:
 
     def load(self, path="retriever_index"):
         """
-        Loads the FAISS index and associated document texts from disk.
+        Loads a previously saved FAISS index and associated text chunks.
 
         Parameters:
-        path (str): Base filename to load the index and text data from.
+        - path (str): Base path (without extension) from which to load index and text data.
         """
         self.index = faiss.read_index(f"{path}.faiss")
         with open(f"{path}_texts.pkl", "rb") as f:
