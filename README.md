@@ -7,7 +7,7 @@
 ---
 
 ## To run the project first run the requirements.txt to install necessary packages
-''pip install -r requirements.txt''
+**pip install -r requirements.txt**
 
 ## 📂 Branch Info
 
