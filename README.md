@@ -37,3 +37,33 @@ For text splitting or chunking, there are several approaches, inspired by  [this
 ## For example, the below image demonstrating how character spilling actually works:
 
 ![Chunking strategies diagram](https://github.com/nafees-iqbal/NLProc-Proj-M-SS25/blob/main/images/1_sBEoJ2xomZl77X6wUmdOlw.png?raw=true)
+
+
+---
+
+## Chunking Method Chosen for This Project
+
+We have chosen **Level 4: Semantic Chunking** as our strategy for this project.
+
+### Why Semantic Chunking?
+
+Semantic chunking splits text based on **sentence boundaries and contextual meaning**, rather than arbitrary character splitting. This allows each chunk to remain **coherent, meaningful, and context rich**, which is critical for:
+
+- **Retrieval accuracy**: More relevant chunks are returned during similarity search.
+- **LLM performance**: Better prompts = better generated answers.
+
+### How It Works in Our Project
+
+- We split the text into **sentences** using `spaCy`.
+- Sentences are grouped into chunks of ~200 tokens.
+- We apply **50-token overlaps** between chunks to preserve context.
+
+This strategy balances precision, context, and retrieval speed — making it ideal for real-world RAG pipelines.
+
+---
+
+### Visual Explanation of Semantic Chunking
+
+<img src="https://github.com/nafees-iqbal/NLProc-Proj-M-SS25/blob/main/images/semantic_chunking_example.png?raw=true" alt="Semantic Chunking Diagram" width="600"/>
+
+---
