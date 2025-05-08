@@ -6,6 +6,9 @@
 
 ---
 
+## To run the project first run the requirements.txt to install necessary packages
+''pip install -r requirements.txt''
+
 ## 📂 Branch Info
 
 All previous week's work and corresponding README files can be found in their respective branches.  

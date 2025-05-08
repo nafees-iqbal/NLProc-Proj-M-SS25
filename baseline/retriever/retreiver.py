@@ -21,9 +21,9 @@ class Retriever:
         """
         Splits the input text into semantically coherent chunks based on sentence boundaries.
 
-        This strategy improves information retrieval in RAG (Retrieval-Augmented Generation) systems
-        by preserving the meaning and context within each chunk. Unlike fixed-size splitting,
-        semantic chunking reduces the chance of splitting mid-sentence or breaking logical structure.
+        This strategy improves information retrieval in RAG systems
+        by preserving the meaning and context within each chunk. Unlike fixed size text splitting,
+        semantic chunking reduces the chance of splitting mid sentence or breaking logical structure.
 
         Parameters:
         - text (str): Raw text to be split.
@@ -59,10 +59,9 @@ class Retriever:
     def add_documents(self, folder_path):
         """
         Loads .txt files from a folder, applies semantic chunking, encodes them into embeddings,
-        and builds a FAISS index for fast similarity search.
+        and builds a FAISS index for similarity search.
 
-        This function uses sentence-based chunking to ensure that each chunk is meaningful and
-        coherent. It enhances both retrieval relevance and LLM generation quality in downstream tasks.
+        This function uses sentence based chunking to ensure that each chunk is meaningful. It enhances both retrieval relevance and LLM generation quality in downstream tasks.
 
         Parameters:
         - folder_path (str): Path to the folder containing .txt files.
@@ -90,7 +89,7 @@ class Retriever:
         - k (int): Number of top matches to return.
 
         Returns:
-        - List[str]: Top-k matched text chunks.
+        - List[str]: Top k matched text chunks.
         - List[float]: Corresponding distances from the query vector.
         """
         query_embedding = self.model.encode([query_text])
@@ -102,11 +101,13 @@ class Retriever:
         Saves the FAISS index and the chunked texts to disk for reuse.
 
         Parameters:
-        - path (str): Base path (without extension) to save index and text data.
+        - path (str): path to save index and text data.
+
+        .pkl file is used for storing and loading python's object like lists, dictionaries etc.
         """
         faiss.write_index(self.index, f"{path}.faiss")
-        with open(f"{path}_texts.pkl", "wb") as f:
-            pickle.dump(self.texts, f)
+        with open(f"{path}_texts.pkl", "wb") as faiss:
+            pickle.dump(self.texts, faiss)
 
     def load(self, path="retriever_index"):
         """
