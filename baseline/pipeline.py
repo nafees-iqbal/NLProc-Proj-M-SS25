@@ -6,36 +6,35 @@ from retriever.retreiver import Retriever
 # Create retriever instance
 retriever = Retriever()
 
-folder_path="data/text-samples"
-filenames, texts = retriever.load_document(folder_path)
-embeddings = retriever.compute_embeddings(texts)
+retriever.add_documents("baseline/data/text-samples")
 
-def compare_text_samples_using_cosine_similarity(retriever, folder_path="data/text-samples"):
+def test_retriever_accuracy(retriever, query, expected_keywords, k=1):
+    """
+    Runs a query and checks whether the top k retrieved chunks contain any expected keywords.
 
-    print("\nComparing text samples for similarity:")
-    retriever.compare_embeddings(embeddings, filenames)
-    retriever.visualize_embeddings_pca(embeddings, filenames)
+    Parameters:
+    - retriever: the Retriever instance
+    - query (str): the input query
+    - expected_keywords: words we expect to see in retrieved text
+    - k (int): top k chunks to retrieve
+    """
+    results, _ = retriever.query(query, k=k)
+    print(f"Query: '{query}'")
 
-def test_query_variants_with_faiss():
-    retriever.build_faiss_index()
+    match_found = False
+    for i, chunk in enumerate(results):
+        print(f"\nResult {i+1}:")
+        print(chunk[:300] + '...')
+        if any(keyword.lower() in chunk.lower() for keyword in expected_keywords):
+            match_found = True
 
-    query_variants = [
-        "a princess who dances with magical shoes",
-        "story about dancing princesses",
-        "princesses disappear at night to dance",
-        "mystery of girls with worn-out shoes",
-        "where do the twelve princesses go every night?"
-    ]
+    if match_found:
+        print("Test Passed: Expected content found in retrieved chunks.")
+    else:
+        print("Test Failed: Expected keywords not found.")
 
-    for query in query_variants:
-        results, distances = retriever.search_faiss(query, k=3)
-        print(" "*80)
-        print(f"\nQuery: {query}")
-        print("\nTop 3 matches from FAISS:")
-        for i, result in enumerate(results):
-            print(f"\nResult {i+1} (distance={distances[i]:.4f}):")
-            print(result[:300] + '...')
-
-
-#compare_text_samples_using_cosine_similarity(retriever)
-test_query_variants_with_faiss()
+test_retriever_accuracy(
+    retriever,
+    query="a princess who dances with magical shoes",
+    expected_keywords=["twelve", "princess", "dance"]
+)

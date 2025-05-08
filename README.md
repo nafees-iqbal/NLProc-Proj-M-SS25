@@ -8,12 +8,13 @@
 
 ## To run the project first run the requirements.txt to install necessary packages
 **pip install -r requirements.txt**
+**python -m spacy download en_core_web_sm**
 
 ---
 
-## Branch Info
+## Previous weeks tasks Info
 
-All previous week's work and corresponding README files can be found in their respective branches.  
+All previous weeks work and corresponding README files can be found in their respective branches.  
 In the `main` branch, only the **current week's tasks** are documented in this main branch README file.
 
 ---
@@ -93,12 +94,12 @@ def semantic_chunk(self, text, max_tokens=200, overlap=50):
 
 ---
 
-### Other Retriever Functions Overview
+### Other Retriever functions summary
 
 Later we added `add_documents()`, `query()`, `save()`, and `load()` functions in the `retriever.py` file for the following operations:
 
 - **`add_documents(folder_path)`**  
-  Load all files (.txt, .pdf, .md) from the specified folder, applied semantic chunking, encoded each chunk into vector embeddings, and built a FAISS index for similarity search.
+  Load all files (`.txt`, `.pdf`, `.md`) from the specified folder, applied semantic chunking, encoded each chunk into vector embeddings, and built a FAISS index for similarity search.
 
 - **`query(query_text, k=3)`**  
   Provided a natural language query, converted it into an vector embedding, and retrieved the top k most relevant document chunks from the FAISS index using vector similarity.
@@ -110,3 +111,13 @@ Later we added `add_documents()`, `query()`, `save()`, and `load()` functions in
   Load the saved FAISS index and text chunks back into memory, allowing immediate use of the retriever without rebuilding the index.
 
 ---
+
+After that we wrote a `test_retriever_accuracy` function in our pipeline.py with the below `query` and `expected keywords`
+
+```python
+query="a princess who dances with magical shoes",
+expected_keywords=["twelve", "princess", "dance"]
+```
+**The below is the output**
+
+![Test output](https://github.com/nafees-iqbal/NLProc-Proj-M-SS25/blob/main/images/semantic-chuking-test-ouput.png?raw=true)

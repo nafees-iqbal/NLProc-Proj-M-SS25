@@ -90,7 +90,7 @@ class Retriever:
 
     def query(self, query_text, k=3):
         """
-        Searches for the top-k most relevant chunks to the given query.
+        Searches for the top k most relevant chunks to the given query.
 
         Parameters:
         - query_text (str): The user query in plain language.
