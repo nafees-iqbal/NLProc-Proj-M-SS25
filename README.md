@@ -53,7 +53,7 @@ Semantic chunking splits text based on **sentence boundaries and contextual mean
 - **Retrieval accuracy**: More relevant chunks are returned during similarity search.
 - **LLM performance**: Better prompts = better generated answers.
 
-![semantic chunking strategies diagram](https://github.com/nafees-iqbal/NLProc-Proj-M-SS25/blob/main/images/images/semantic-chunking.png?raw=true)
+![semantic chunking strategies diagram](https://github.com/nafees-iqbal/NLProc-Proj-M-SS25/blob/main/images/semantic-chunking.png?raw=true)
 
 ---
 
