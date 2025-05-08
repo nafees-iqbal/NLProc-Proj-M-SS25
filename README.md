@@ -51,7 +51,7 @@ We have chosen **Level 4: Semantic Chunking** as our strategy for this project.
 Semantic chunking splits text based on **sentence boundaries and contextual meaning**, rather than arbitrary character splitting. This allows each chunk to remain **coherent, meaningful, and context rich**, which is critical for:
 
 - **Retrieval accuracy**: More relevant chunks are returned during similarity search.
-- **LLM performance**: Better prompts = better generated answers.
+- **LLM performance**: Better prompts and better generated answers.
 
 ![semantic chunking strategies diagram](https://github.com/nafees-iqbal/NLProc-Proj-M-SS25/blob/main/images/semantic-chunking.png?raw=true)
 
@@ -93,5 +93,20 @@ def semantic_chunk(self, text, max_tokens=200, overlap=50):
 
 ---
 
+### Other Retriever Functions Overview
+
+Later we added `add_documents()`, `query()`, `save()`, and `load()` functions in the `retriever.py` file for the following operations:
+
+- **`add_documents(folder_path)`**  
+  Load all files (.txt, .pdf, .md) from the specified folder, applied semantic chunking, encoded each chunk into vector embeddings, and built a FAISS index for similarity search.
+
+- **`query(query_text, k=3)`**  
+  Provided a natural language query, converted it into an vector embedding, and retrieved the top k most relevant document chunks from the FAISS index using vector similarity.
+
+- **`save(path)`**  
+  Saved the FAISS index (`.faiss` file) and the corresponding text chunks (`.pkl` file) to disk so that the retriever can be reloaded later without reprocessing.
+
+- **`load(path)`**  
+  Load the saved FAISS index and text chunks back into memory, allowing immediate use of the retriever without rebuilding the index.
 
 ---
