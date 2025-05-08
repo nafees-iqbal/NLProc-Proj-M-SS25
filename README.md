@@ -9,14 +9,14 @@
 ## To run the project first run the requirements.txt to install necessary packages
 **pip install -r requirements.txt**
 
-## 📂 Branch Info
+## Branch Info
 
 All previous week's work and corresponding README files can be found in their respective branches.  
 In the `main` branch, only the **current week's tasks** are documented in this main branch README file.
 
 ---
 
-# 📅 Week 3
+# Week 3
 
 
 ## Chunking strategies
@@ -33,3 +33,7 @@ For text splitting or chunking, there are several approaches, inspired by  [this
 - *Bonus Level:* Alternative Representation Chunking + Indexing - Derivative representations of your raw text that will aid in retrieval and indexing
 
 ![Chunking strategies diagram](https://github.com/nafees-iqbal/NLProc-Proj-M-SS25/blob/main/images/92c70184-ba0f-4877-9a55-e4add0e311ad_870x1116.gif?raw=true)
+
+## For example, the below image demonstrating how character spilling actually works:
+
+![Chunking strategies diagram](https://github.com/nafees-iqbal/NLProc-Proj-M-SS25/blob/main/images/1_sBEoJ2xomZl77X6wUmdOlw.png?raw=true)
