@@ -1,77 +1,71 @@
-# retriever.py
-
+import os
 import numpy as np
 import faiss
+import pickle
 from sentence_transformers import SentenceTransformer
-import os
-from sklearn.metrics.pairwise import cosine_similarity
-from sklearn.decomposition import PCA
-import matplotlib.pyplot as plt
 
 class Retriever:
-    def __init__(self, model_name="all-MiniLM-L6-v2", chunk_size=200):
+    def __init__(self, model_name="all-MiniLM-L6-v2"):
+        """
+        Initializes the Retriever with a given embedding model.
+        """
         self.model = SentenceTransformer(model_name)
-        self.chunk_size = chunk_size
-        self.chunks = []
-        self.embeddings = None
         self.texts = []
+        self.embeddings = None
         self.index = None
 
-    def load_document(self, folder_path):
+    def add_documents(self, folder_path):
+        """
+        Loads .txt files from the folder, encodes them, and prepares for semantic search.
+
+        Parameters:
+        folder_path: Path to the folder containing .txt files.
+        """
         texts = []
-        filenames = []
         for filename in os.listdir(folder_path):
             if filename.endswith(".txt"):
                 with open(os.path.join(folder_path, filename), 'r', encoding='utf-8') as file:
                     texts.append(file.read())
-                    filenames.append(filename)
+
         self.texts = texts
-        return filenames, texts
-    
-    def compute_embeddings(self, texts):
-        self.embeddings = self.model.encode(texts) # convert text into vector embeddings
-        return self.embeddings
-    
-    def compare_embeddings(self, embeddings, filenames):
-        similarity_matrix = cosine_similarity(embeddings) # make a 2D matrix for pairwise cosine similarity
-        print("\nCosine Similarity Matrix:")
-        print("".ljust(20), end='')
-        for name in filenames:
-            print(name.ljust(20), end='')
-        print()
-        for i, row in enumerate(similarity_matrix):
-            print(filenames[i].ljust(20), end='')
-            for val in row:
-                print(f"{val:.2f}".ljust(20), end='')
-            print()
-
-    def visualize_embeddings_pca(self, embeddings, labels):
-        pca = PCA(n_components=2)
-        pca_result = pca.fit_transform(embeddings)
-
-        plt.figure(figsize=(8, 6))
-        plt.scatter(pca_result[:, 0], pca_result[:, 1], c='skyblue')
-        for i, label in enumerate(labels):
-            plt.annotate(label, (pca_result[i, 0], pca_result[i, 1]))
-        plt.title("PCA Visualization of Text Embeddings")
-        plt.xlabel("Principal Component 1")
-        plt.ylabel("Principal Component 2")
-        plt.grid(True)
-        plt.tight_layout()
-        plt.show()
-
-    def build_faiss_index(self):
-        dim = self.embeddings.shape[1] # self.embedding is a 2D array, (self.embeddings.shape) return N (Numbers of vector) and D (dimension)
-        self.index = faiss.IndexFlatL2(dim) # create a index data structure, which will store vectors of size dim
+        self.embeddings = self.model.encode(texts)
+        dim = self.embeddings.shape[1]
+        self.index = faiss.IndexFlatL2(dim)
         self.index.add(np.array(self.embeddings, dtype='float32'))
 
-    def search_faiss(self, query_text, k=3):
+    def query(self, query_text, k=3):
+        """
+        Searches for the top k most relevant documents to the given query.
+
+        Parameters:
+        query_text: The input query string.
+        k: Number of top matches to return.
+
+        Returns:
+        List of top k matched texts and their distances.
+        """
         query_embedding = self.model.encode([query_text])
-        D, I = self.index.search(np.array(query_embedding), k) # D and I both are 2D array
+        D, I = self.index.search(np.array(query_embedding, dtype='float32'), k)
         return [self.texts[i] for i in I[0]], D[0]
-    
-    def retrieve(self, query, k=3):
-        query_embedding = self.model.encode([query])
-        D, I = self.index.search(np.array(query_embedding), k)
-        retrieved_chunks = [self.chunks[i] for i in I[0]]
-        return retrieved_chunks
+
+    def save(self, path="retriever_index"):
+        """
+        Saves the FAISS index and associated document texts to disk.
+
+        Parameters:
+        path: Base filename to save the index and text data.
+        """
+        faiss.write_index(self.index, f"{path}.faiss")
+        with open(f"{path}_texts.pkl", "wb") as f:
+            pickle.dump(self.texts, f)
+
+    def load(self, path="retriever_index"):
+        """
+        Loads the FAISS index and associated document texts from disk.
+
+        Parameters:
+        path (str): Base filename to load the index and text data from.
+        """
+        self.index = faiss.read_index(f"{path}.faiss")
+        with open(f"{path}_texts.pkl", "rb") as f:
+            self.texts = pickle.load(f)
