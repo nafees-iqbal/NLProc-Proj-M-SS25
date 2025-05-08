@@ -27,18 +27,27 @@ class Retriever:
 
         Parameters:
         - text (str): Raw text to be split.
-        - max_tokens (int): Maximum token count per chunk.
-        - overlap (int): Number of overlapping tokens between chunks for context preservation.
+        - max_tokens (int): Maximum number of token per chunk.
+        - overlap (int): Number of tokens repeated between chunks.
 
         Returns:
         - List[str]: List of semantic chunks.
+
+        Example output:
+
+        [
+            "Sentence 1. Sentence 2. Sentence 3.",
+            "Sentence 3. Sentence 4. Sentence 5.",
+            "Sentence 5. Sentence 6. Sentence 7.",
+        ]
+
         """
-        doc = self.nlp(text)
+        doc = self.nlp(text) # Used spaCy to split the input text into full sentences.
         sentences = [sent.text for sent in doc.sents]
 
         chunks = []
         current_chunk = []
-        current_len = 0
+        current_len = 0 # how many tokens are currently in current_chunk
 
         for sentence in sentences:
             sent_len = len(self.nlp(sentence))
