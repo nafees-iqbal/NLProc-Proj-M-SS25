@@ -2,13 +2,25 @@
 
 import os
 from retriever.retreiver import Retriever
+from generator.generator import Generator
 
 retriever = Retriever()
+generator = Generator()
 
 index_path = "retriever_index"
 index_file = f"{index_path}.faiss"
 text_file = f"{index_path}_texts.pkl"
 courses_folder = "baseline/data/uni-bamberg-courses/dsg-dsam-m"
+
+example_context = (
+    "In a distributed system, nodes communicate over a network and do not share memory. "
+    "Consistency and fault tolerance are major concerns in such systems."
+)
+
+example_question = (
+    "What are the key challenges in maintaining consistency in distributed systems?"
+)
+
 
 if os.path.exists(index_file) and os.path.exists(text_file):
     print("Loading existing FAISS index and text chunks...")
@@ -20,39 +32,24 @@ else:
     print("Index built and saved.")
 
 
-def test_retriever_accuracy(retriever, query, expected_keywords, k=3):
-    """
-    Runs a query and checks whether the top k retrieved chunks contain any expected keywords.
+def run_rag_pipeline(query, k=3):
+    print(f"\nQuery: {query}")
 
-    Parameters:
-    - retriever: the Retriever instance
-    - query (str): the input query string
-    - expected_keywords (list of str): keywords we expect to find in the top-k results
-    - k (int): number of top results to check
-    """
-    results, _ = retriever.query(query, k=k)
-    print(f"Query: '{query}'")
-    match_found = False
-    matched_keywords = set()
+    retrieved_chunks, _ = retriever.query(query, k=k)
+    combined_context = "\n\n".join(retrieved_chunks)
 
-    for i, chunk in enumerate(results):
-        print(f"\nResult {i+1}:\n{chunk[:300]}...\n")
-        for keyword in expected_keywords:
-            if keyword.lower() in chunk.lower():
-                matched_keywords.add(keyword.lower())
+    prompt = generator.build_prompt(
+        context=combined_context,
+        task=query,
+        example_context=example_context,
+        example_output=example_question
+    )
+    answer = generator.generate_answer(prompt)
 
-    if matched_keywords:
-        print(f"Test Passed: Found keyword(s): {', '.join(matched_keywords)}")
-        match_found = True
-    else:
-        print("Test Failed: None of the expected keywords were found.")
-        print(f"Expected one of: {', '.join(expected_keywords)}")
+    print("Generated Answer:\n", answer)
 
-    return match_found
-
-test_retriever_accuracy(
-    retriever,
-    query="a princess who dances with magical shoes",
-    expected_keywords=["twelve", "princess", "dance"],
-    k=3
+# 🔍 Run query
+run_rag_pipeline(
+    query = "summarize content from the DSAM course",
+    k=1
 )

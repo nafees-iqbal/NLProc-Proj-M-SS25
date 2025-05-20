@@ -8,3 +8,6 @@ markdown
 transformers
 PyMuPDF
 python-docx
+torch
+sentencepiece
+
