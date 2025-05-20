@@ -16,3 +16,5 @@ It generates a response, word by word, that it thinks is most likely based on th
 This is generative behavior, it creates answers, not just retrieve/copy them 
 
 """
+
+def generate():
