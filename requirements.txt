@@ -5,3 +5,6 @@ numpy
 pickle-mixin
 pdfminer.six
 markdown
+transformers
+PyMuPDF
+python-docx

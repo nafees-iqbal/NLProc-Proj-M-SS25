@@ -8,21 +8,21 @@ retriever = Retriever()
 index_path = "retriever_index"
 index_file = f"{index_path}.faiss"
 text_file = f"{index_path}_texts.pkl"
+courses_folder = "baseline/data/uni-bamberg-courses/dsg-dsam-m"
 
 if os.path.exists(index_file) and os.path.exists(text_file):
     print("Loading existing FAISS index and text chunks...")
     retriever.load(index_path)
 else:
     print("Index not found. Building from scratch...")
-    retriever.add_documents("baseline/data/text-samples")
+    retriever.add_documents(courses_folder)
     retriever.save(index_path)
     print("Index built and saved.")
 
-# -------------------------------------------------------------------
-# Function to test retriever output
+
 def test_retriever_accuracy(retriever, query, expected_keywords, k=3):
     """
-    Runs a query and checks whether the top-k retrieved chunks contain any expected keywords.
+    Runs a query and checks whether the top k retrieved chunks contain any expected keywords.
 
     Parameters:
     - retriever: the Retriever instance

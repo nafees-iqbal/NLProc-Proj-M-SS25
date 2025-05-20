@@ -3,6 +3,9 @@ import numpy as np
 import faiss
 import pickle
 import spacy
+import fitz  
+import docx
+from typing import List
 from sentence_transformers import SentenceTransformer
 
 class Retriever:
@@ -63,6 +66,36 @@ class Retriever:
             chunks.append(" ".join(current_chunk))
 
         return chunks
+    
+    def read_pdf(self, file_path: str) -> str:
+        doc = fitz.open(file_path)
+        return "\n".join([page.get_text() for page in doc])
+
+    def read_docx(self, file_path: str) -> str:
+        doc = docx.Document(file_path)
+        return "\n".join([para.text for para in doc.paragraphs])
+
+    def read_txt(self, file_path: str) -> str:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            return f.read()
+    
+    def read_file_by_type(self, file_path: str) -> str:
+        if file_path.endswith(".txt"):
+            return self.read_txt(file_path)
+        elif file_path.endswith(".pdf"):
+            return self.read_pdf(file_path)
+        elif file_path.endswith(".docx"):
+            return self.read_docx(file_path)
+        else:
+            return ""  
+
+    def collect_all_files(self, base_folder: str, allowed_exts: List[str]) -> List[str]:
+        file_paths = []
+        for root, _, files in os.walk(base_folder):
+            for file in files:
+                if any(file.lower().endswith(ext) for ext in allowed_exts):
+                    file_paths.append(os.path.join(root, file))
+        return file_paths
 
     def add_documents(self, folder_path):
         """
@@ -74,13 +107,16 @@ class Retriever:
         Parameters:
         - folder_path (str): Path to the folder containing .txt files.
         """
+        allowed_extensions = [".txt", ".pdf", ".docx"]
         all_chunks = []
-        for filename in os.listdir(folder_path):
-            if filename.endswith(".txt"):
-                with open(os.path.join(folder_path, filename), 'r', encoding='utf-8') as file:
-                    text = file.read()
-                    chunks = self.semantic_chunk(text)
-                    all_chunks.extend(chunks)
+
+        file_paths = self.collect_all_files(folder_path, allowed_extensions)
+
+        for file_path in file_paths:
+            text = self.read_file_by_type(file_path)
+            if text.strip():
+                chunks = self.semantic_chunk(text)
+                all_chunks.extend(chunks)
 
         self.texts = all_chunks
         self.embeddings = self.model.encode(all_chunks)
@@ -127,3 +163,5 @@ class Retriever:
         self.index = faiss.read_index(f"{path}.faiss")
         with open(f"{path}_texts.pkl", "rb") as f:
             self.texts = pickle.load(f)
+
+    
