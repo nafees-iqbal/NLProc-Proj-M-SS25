@@ -50,6 +50,6 @@ def run_rag_pipeline(query, k=3):
 
 # 🔍 Run query
 run_rag_pipeline(
-    query = "summarize content from the DSAM course",
+    query = "What is middleware?",
     k=1
 )

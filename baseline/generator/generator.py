@@ -28,32 +28,29 @@ class Generator:
         self.model = T5ForConditionalGeneration.from_pretrained(model_name)
     
     def build_prompt(self, context: str, task: str, example_context: str = None, example_output: str = None) -> str:
-        if task.lower().startswith("summarize"):
-            
-            return f"""Summarize the following course content:
+        
+        return f"""
+                You are an assistant for a university level course.
+
+                Use only the information from the context. If the answer is not present in the context, say "I don't know." 
+                Respond with one exam-style question, clearly phrased.
+
+                Example:
+                Context:
+                A distributed system is a collection of independent computers that appear to the user as a single system.
+
+                Question:
+                What is a distributed system?
+
+                ---
+
+                Now use the following context to generate a question.
 
                 Context:
                 {context}
 
-                Summary:"""
-        return f"""
-            You are an AI assistant for a university professor. Your task is to generate deep, technical exam questions based on distributed systems course content.
-
-            Example:
-            Context:
-            {example_context}
-
-            Question:
-            {example_output}
-
-            ---
-
-            Now, read the context below and generate one technical university-level exam question.
-
-            Context:
-            {context}
-
-            Question:"""                                                                
+                Question:
+            """                                                                
                                                             
 
 
