@@ -139,7 +139,7 @@ Improve the system to generate real university exam questions and answers based 
 ![model card 3](https://github.com/nafees-iqbal/NLProc-Proj-M-SS25/blob/main/images/pie-chart-of-week-5-evaluation.png?raw=true)
 
 ### Data Plan:
-- Extend with new course folders (like AI, DBMS).
+- Extend with new course folders (like MOBI, SOA).
 - Add scraped academic QA data for generalization.
 - Clean and align past exam sets.
 
