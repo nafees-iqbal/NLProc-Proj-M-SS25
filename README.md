@@ -67,3 +67,24 @@ python -m baseline.pipeline
 
 ![model card 1](https://github.com/nafees-iqbal/NLProc-Proj-M-SS25/blob/main/images/flan2_architecture.jpg?raw=true)
 
+## Let's Now jump into the demo
+## Demo: End-to-End Example
+
+**Query:**  
+`What is the full form of Java EE?`
+
+**Retrieved Chunk:**  
+`Java EE stands for Java Platform, Enterprise Edition...`
+
+**Prompt Format:**
+
+```python
+Context:
+Java EE stands for Java Platform, Enterprise Edition...
+
+Question:
+What is the full form of Java EE?
+
+Answer:
+```
+
