@@ -1,0 +1,15 @@
+[
+    {
+      "question": "What is the Java EE full form?",
+      "expected_answer": "Java EE full form is Java Enterprise Edition."
+    },
+    {
+      "question": "What is full form of FAAS?",
+      "expected_answer": "FAAS full form is Function As a Service."
+    },
+    {
+      "question": "How many types of Google firestore?",
+      "expected_answer": "Google firestore has 2 types."
+    }
+]
+  

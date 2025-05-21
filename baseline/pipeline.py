@@ -1,25 +1,27 @@
 # pipeline.py
 
 import os
+import sys
 from retriever.retreiver import Retriever
 from generator.generator import Generator
 
+SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(os.path.dirname(SCRIPT_DIR))
+
+
+
+
+from evaluation.evaluation import Evaluation
+
 retriever = Retriever()
 generator = Generator()
+evaluation = Evaluation()
+
 
 index_path = "retriever_index"
 index_file = f"{index_path}.faiss"
 text_file = f"{index_path}_texts.pkl"
 courses_folder = "baseline/data/uni-bamberg-courses/dsg-dsam-m"
-
-example_context = (
-    "In a distributed system, nodes communicate over a network and do not share memory. "
-    "Consistency and fault tolerance are major concerns in such systems."
-)
-
-example_question = (
-    "What are the key challenges in maintaining consistency in distributed systems?"
-)
 
 
 if os.path.exists(index_file) and os.path.exists(text_file):
@@ -32,24 +34,4 @@ else:
     print("Index built and saved.")
 
 
-def run_rag_pipeline(query, k=3):
-    print(f"\nQuery: {query}")
-
-    retrieved_chunks, _ = retriever.query(query, k=k)
-    combined_context = "\n\n".join(retrieved_chunks)
-
-    prompt = generator.build_prompt(
-        context=combined_context,
-        task=query,
-        example_context=example_context,
-        example_output=example_question
-    )
-    answer = generator.generate_answer(prompt)
-
-    print("Generated Answer:\n", answer)
-
-# 🔍 Run query
-run_rag_pipeline(
-    query = "What is middleware?",
-    k=1
-)
+evaluation.run_evaluation(retriever, generator)
