@@ -88,3 +88,59 @@ What is the full form of Java EE?
 Answer:
 ```
 
+
+**Generated Answer:**  
+`Java EE full form is Java Enterprise Edition.`
+
+**Evaluation:** Match with 85% accuracy (Score: 0.85)
+
+---
+
+## Evaluation Summary
+
+- All queries and generated answers are logged to JSON file with generated date filename.
+- The `unit_test.py` script checks for semantic similarity using embeddings.
+- A pie chart visualizes matched vs unmatched answers.
+
+---
+
+## What Works Well
+
+- Semantic chunking preserves contextual integrity.
+- FAISS provides accurate retrieval across materials.
+- Prompt based Flan-T5-base inference performs well on QA.
+- Logging + test comparison is modular and automated.
+
+---
+
+## What Needs Improvement
+
+- Summarization style prompts still often return questions.
+- Answers with varied word may show low similarity using lexical matching.
+- Better performance for open-ended queries is needed.
+
+---
+
+## Specialization Proposal (Phase 2)
+
+### Goal:
+Improve the system to generate real university exam questions and answers based on past exams, course slides, and module goals.
+
+### Changes:
+- Replace one shot prompts with few shot dynamic examples.
+- Finevtune Flan-T5-base or switch to domain adapted models (like BioBERT for medicine).
+- Build UI with Streamlit for interactive testing.
+
+### Evaluation:
+- Precision on test Q&A.
+- Human judgment: exam style validity.
+- score evaluated by all-MiniLM-L6-v2's SentenceTransformer: Is the answer actually in retrieved context?
+![model card 2](https://github.com/nafees-iqbal/NLProc-Proj-M-SS25/blob/main/images/evaluation-score-week-5.png?raw=true)
+![model card 3](https://github.com/nafees-iqbal/NLProc-Proj-M-SS25/blob/main/images/pie-chart-of-week-5-evaluation.png?raw=true)
+
+### Data Plan:
+- Extend with new course folders (like AI, DBMS).
+- Add scraped academic QA data for generalization.
+- Clean and align past exam sets.
+
+
