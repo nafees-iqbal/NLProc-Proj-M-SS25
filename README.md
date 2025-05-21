@@ -24,6 +24,10 @@ In the `main` branch, only the **current week's tasks** are documented in this m
 
 ---
 
+## Project Overview
+
+This project implements a **Retrieval-Augmented Generation (RAG)** pipeline for university level course material. The goal is to retrieve relevant document chunks using semantic search and generate answers using a transformer based language model (`Flan-T5`). Our model is trained on **University of Bamberg's** various courses `course modules`, `slides` and `previous exam questions`  from bachelor and masters degree programs. So that our model can generate and predict current semester's `question`, `summarize` course content and `answer` various questions of any specific course.
+
 # Week 5
 
 ## Let's first go through the paper `https://arxiv.org/pdf/2210.11416` where we find the ''Model Card for FLAN-T5 base''
