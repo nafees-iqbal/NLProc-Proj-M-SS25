@@ -1,4 +1,3 @@
-#implement your generator here
 
 """
 LLMs model the statistical distribution of text using model weights, i.e.
@@ -32,11 +31,11 @@ class Generator:
         Builds a prompt for answer generation using context and a one-shot example.
 
         Parameters:
-        - context (str): the retrieved relevant chunks
-        - question (str): the actual user query
+        context (str): the retrieved relevant chunks
+        question (str): the actual user query
 
         Returns:
-        - str: prompt for the model
+        str: prompt for the model
         """
         prompt = (
             "You are an assistant for a university-level course.\n"

@@ -8,10 +8,8 @@ from generator.generator import Generator
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.dirname(SCRIPT_DIR))
 
-
-
-
 from evaluation.evaluation import Evaluation
+from evaluation.tests.unit_test import run_unit_test
 
 retriever = Retriever()
 generator = Generator()
@@ -35,3 +33,4 @@ else:
 
 
 evaluation.run_evaluation(retriever, generator)
+run_unit_test(evaluation)
