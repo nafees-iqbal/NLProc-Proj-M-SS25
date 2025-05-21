@@ -31,15 +31,10 @@ class Evaluation:
 
         for item in test_data:
             question = item["question"]
-            retrieved_chunks, _ = retriever.query(question, k=3)
+            retrieved_chunks, _ = retriever.query(question, k=1)
             context = "\n\n".join(retrieved_chunks)
 
-            prompt = generator.build_prompt(
-                context=context,
-                task=question,
-                example_context="A distributed system is a set of independent nodes.",
-                example_output="What is a distributed system?"
-            )
+            prompt = generator.build_prompt(context=context, question=question)
             answer = generator.generate_answer(prompt)
 
             log_entry = {

@@ -27,30 +27,36 @@ class Generator:
         self.tokenizer = T5Tokenizer.from_pretrained(model_name)
         self.model = T5ForConditionalGeneration.from_pretrained(model_name)
     
-    def build_prompt(self, context: str, task: str, example_context: str = None, example_output: str = None) -> str:
-        
-        return f"""
-                You are an assistant for a university level course.
+    def build_prompt(self, context: str, question: str) -> str:
+        """
+        Builds a prompt for answer generation using context and a one-shot example.
 
-                Use only the information from the context. If the answer is not present in the context, say "I don't know." 
-                Respond with one exam-style question, clearly phrased.
+        Parameters:
+        - context (str): the retrieved relevant chunks
+        - question (str): the actual user query
 
-                Example:
-                Context:
-                A distributed system is a collection of independent computers that appear to the user as a single system.
+        Returns:
+        - str: prompt for the model
+        """
+        prompt = (
+            "You are an assistant for a university-level course.\n"
+            "Use only the provided context to answer the question.\n"
+            "If the answer is not in the context, respond with: I don't know.\n\n"
+            "Example:\n"
+            "Context:\n"
+            "Java EE stands for Java Platform, Enterprise Edition, which is used to develop enterprise-level applications.\n"
+            "Question:\n"
+            "What is the full form of Java EE?\n"
+            "Answer:\n"
+            "Java EE full form is Java Enterprise Edition.\n"
+            "Now use the following context to answer the question.\n"
+            f"Context:\n{context}\n"
+            f"Question:\n{question}\n"
+            "Answer:"
+        )
 
-                Question:
-                What is a distributed system?
-
-                ---
-
-                Now use the following context to generate a question.
-
-                Context:
-                {context}
-
-                Question:
-            """                                                                
+        return prompt
+                                                              
                                                             
 
 
