@@ -1,6 +1,6 @@
 # RAG Project – Summer Semester 2025. 
 ## Team NNN
-### Nabanita Bhowmick
+### Nabanita Bhowmik Shathi
 ### Nafees Iqbal
 ### Naznin Ahmed
 
