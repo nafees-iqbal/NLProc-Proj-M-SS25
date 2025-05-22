@@ -13,12 +13,9 @@ class Evaluation:
 
     def run_evaluation(self, retriever, generator):
         """
-        this evaluation using test questions and logs the output to a date specific JSON file.
-
-        Parameters:
-        retriever: an instance of Retriever class
-        generator: an instance of Generator class
+        This evaluation runs over test questions and logs the output to a date specific JSON file.
         """
+
         test_file = "evaluation/tests/test_sample_question_answer.json"
         log_dir = "evaluation/logs"
         os.makedirs(log_dir, exist_ok=True)
@@ -35,14 +32,44 @@ class Evaluation:
 
         for item in test_data:
             question = item["question"]
+            task = item.get("task", "qa")  # default to 'qa'
+            options = item.get("options", None)
+
             retrieved_chunks, _ = retriever.query(question, k=1)
             context = "\n\n".join(retrieved_chunks)
 
-            prompt = generator.build_prompt(context=context, question=question)
+            prompt = generator.build_prompt(
+                context=context,
+                task_input=question,
+                mode=task,
+                options=options
+            )
             answer = generator.generate_answer(prompt)
+            if task == "classification":
+                answer = answer.strip().lower()
+                if "offensive" in answer:
+                    answer = "Offensive"
+                elif "non-offensive" in answer:
+                    answer = "Non-offensive"
+                else:
+                    answer = "Unclear"
+
+            if task == "mcq":
+                valid_letters = [chr(97+i) for i in range(len(options))] 
+                answer = answer.strip().lower()
+                if answer not in valid_letters:
+
+                    for letter in valid_letters:
+                        if letter in answer:
+                            answer = letter
+                            break
+                    else:
+                        answer = "invalid"
+
 
             log_entry = {
                 "question": question,
+                "task": task,
                 "retrieved_chunks": retrieved_chunks,
                 "prompt": prompt,
                 "generated_answer": answer,
@@ -56,6 +83,7 @@ class Evaluation:
             json.dump(log_entries, f, indent=4)
 
         print(f"Evaluation complete. Log written to {log_file}")
+
     
     def semantic_similarity(self, expected: str, actual: str) -> float:
         """
