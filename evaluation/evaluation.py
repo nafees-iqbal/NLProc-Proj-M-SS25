@@ -32,11 +32,20 @@ class Evaluation:
 
         for item in test_data:
             question = item["question"]
-            task = item.get("task", "qa")  # default to 'qa'
+            task = item.get("task", "qa") 
             options = item.get("options", None)
 
-            retrieved_chunks, _ = retriever.query(question, k=1)
-            context = "\n\n".join(retrieved_chunks)
+            if "context" not in item:
+                if task in ["qa", "classification"]:
+                    retrieved_chunks, _ = retriever.query(question, k=3)
+                    context = "\n\n".join(retrieved_chunks)
+                else:
+                    retrieved_chunks = []
+                    context = ""
+            else:
+                context = item["context"]
+                retrieved_chunks = [context]
+
 
             prompt = generator.build_prompt(
                 context=context,
@@ -44,7 +53,7 @@ class Evaluation:
                 mode=task,
                 options=options
             )
-            answer = generator.generate_answer(prompt)
+            answer = generator.generate_answer(prompt, mode=task, options=options)
             if task == "classification":
                 answer = answer.strip().lower()
                 if "offensive" in answer:

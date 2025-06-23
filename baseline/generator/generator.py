@@ -15,41 +15,46 @@ It generates a response, word by word, that it thinks is most likely based on th
 This is generative behavior, it creates answers, not just retrieve/copy them 
 
 """
-from transformers import T5Tokenizer, T5ForConditionalGeneration # transformers are a type of architecture like T5, BERT
+
+import os
+os.environ["HF_HUB_DISABLE_XET"] = "1"
 import torch
+from transformers import (
+    T5Tokenizer, T5ForConditionalGeneration,
+    BartTokenizer, BartForConditionalGeneration,
+    DistilBertTokenizer, DistilBertForSequenceClassification,
+    AutoTokenizer, AutoModelForQuestionAnswering,
+    GPT2Tokenizer, GPT2LMHeadModel
+)
+
 
 class Generator:
-    def __init__(self, model_name="google/flan-t5-base"):
-        """
-        Initializes the generator with a pretrained instruction-tuned model (e.g., Flan-T5).
-        """
-        self.tokenizer = T5Tokenizer.from_pretrained(model_name)
-        self.model = T5ForConditionalGeneration.from_pretrained(model_name)
-    
+    def __init__(self):
+        self.device = torch.device("cpu")
+
+        self.qa_tokenizer = AutoTokenizer.from_pretrained("deepset/tinyroberta-squad2")
+        self.qa_model = AutoModelForQuestionAnswering.from_pretrained("deepset/tinyroberta-squad2").to(self.device)
+
+        self.summ_tokenizer = T5Tokenizer.from_pretrained("google/flan-t5-large")
+        self.summ_model = T5ForConditionalGeneration.from_pretrained("google/flan-t5-large").to(self.device)
+
+        self.mcq_tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
+        self.mcq_model = GPT2LMHeadModel.from_pretrained("gpt2").to(self.device)
+        self.mcq_tokenizer.pad_token = self.mcq_tokenizer.eos_token
+
+        self.classifier_tokenizer = DistilBertTokenizer.from_pretrained("distilbert-base-uncased-finetuned-sst-2-english")
+        self.classifier_model = DistilBertForSequenceClassification.from_pretrained("distilbert-base-uncased-finetuned-sst-2-english").to(self.device)
+
     def build_prompt(self, context: str, task_input: str, mode: str = "qa", options: list = None) -> str:
-        """
-        Builds dynamic prompts with one-shot examples for different RAG task types.
-
-        Parameters:
-        - context (str): Retrieved context or reference text.
-        - task_input (str): The user's input (question or sentence).
-        - mode (str): One of "qa", "summarization", "mcq", or "classification".
-        - options (list): Multiple choice options (used in mcq mode).
-
-        Returns:
-        - str: A full prompt with one-shot examples.
-        """
         if mode == "qa":
             return (
                 "You are an assistant for a university-level course.\n"
                 "Use only the provided context to answer the question.\n"
                 "If the answer is not in the context, respond with: I don't know.\n\n"
                 "Example:\n"
-                "Context:""\nJava EE stands for Java Platform, Enterprise Edition, which is used to develop enterprise level applications.\n"
-                "Question:\n"
-                "What is the full form of Java EE?\n"
-                "Answer:\n"
-                "Java EE full form is Java Enterprise Edition.\n\n"
+                "Context:\nJava EE stands for Java Platform, Enterprise Edition.\n"
+                "Question:\nWhat is the full form of Java EE?\n"
+                "Answer:\nJava EE stands for Java Platform, Enterprise Edition.\n\n"
                 "Now use the following context to answer the question.\n"
                 f"Context:\n{context}\n"
                 f"Question:\n{task_input}\n"
@@ -58,74 +63,92 @@ class Generator:
 
         elif mode == "summarization":
             return (
-                "You are an academic assistant.\n"
-                "Summarize the following content clearly and concisely.\n\n"
-                "Example:\n"
-                "Content:\n"
-                "Machine learning is a field of artificial intelligence that uses statistical techniques to give computer systems the ability to learn from data.\n"
-                "Summary:\n"
-                "Machine learning enables computers to learn from data using statistical methods.\n\n"
-                "Now summarize the following content:\n"
-                f"Content:\n{context}"
+                "You are an expert summarizer.\n"
+                "Rewrite the following explanation into a concise, formal summary using factual, objective tone. "
+                "Avoid phrases like 'learn' or 'understand'. Focus on the core technical content.\n\n"
+                f"Content:\n{context}\n\n"
+                "Summary:"
             )
 
         elif mode == "mcq":
             option_text = '\n'.join([f"{chr(97+i)}) {opt}" for i, opt in enumerate(options)])
             return (
-                "You are a quiz assistant. Use the provided context to answer the question. Choose one letter only from the given options.Always respond with a single letter (a, b, c, ...).\n\n"
-                "Example:\n"
-                "Context:\n"
-                "Paris is the capital of France.\n"
-                "Question:\n"
-                "What is the capital of France?\n"
-                "Options:\n"
-                "a) Rome\n"
-                "b) Berlin\n"
-                "c) Paris\n"
-                "Answer:\n"
-                "c\n\n"
-                "Now answer the following question:\n"
+                "You are a quiz assistant. Use the provided context to answer the question. Choose one letter only from the given options.\n\n"
                 f"Context:\n{context}\n"
                 f"Question:\n{task_input}\n"
                 f"Options:\n{option_text}\n"
                 "Answer:"
             )
 
-
         elif mode == "classification":
-            return (
-                "You are a content moderation system. Use the following reference rules to decide whether the input is Offensive or Non-offensive. Only respond with one of the two categories: Offensive or Non-offensive.\n\n"
-                "Example:\n"
-                "Rules:\n"
-                "Profanity, hate speech, and personal attacks are considered offensive.\n"
-                "Input:\n"
-                "You are a terrible person!\n"
-                "Classification:\n"
-                "Offensive\n\n"
-                "Now classify the following input:\n"
-                f"Rules:\n{context}\n"
-                f"Input:\n{task_input}\n"
-                "Classification:"
-            )
-
+            return f"Classify the following sentence:\n{task_input}"
 
         else:
             raise ValueError(f"Unknown mode: {mode}")
 
+    def generate_answer(self, prompt: str, mode: str = "qa", options: list = None, max_tokens: int = 300) -> str:
+        if mode == "qa":
+            try:
+                context_block = prompt.split("Context:\n", 1)[1]
+                context, question_block = context_block.split("Question:\n", 1)
+                question = question_block.split("Answer:")[0].strip()
+                context = context.strip()
+            except (IndexError, ValueError) as e:
+                print(f"[ERROR] Failed to parse prompt in QA mode:\n{prompt}\nException: {e}")
+                return "Prompt parse error"
 
-    def generate_answer(self, prompt: str, max_tokens: int = 100) -> str:
-        """
-        Generates an answer from the prompt using the Flan-T5 model.
 
-        Parameters:
-        prompt (str): Prompt containing context and question
-        max_tokens (int): Maximum number of tokens in the generated answer
+            inputs = self.qa_tokenizer(question, context, return_tensors="pt", truncation=True, max_length=512).to(self.device)
+            with torch.no_grad():
+                outputs = self.qa_model(**inputs)
+                start = torch.argmax(outputs.start_logits)
+                end = torch.argmax(outputs.end_logits) + 1
+                answer = self.qa_tokenizer.convert_tokens_to_string(
+                    self.qa_tokenizer.convert_ids_to_tokens(inputs["input_ids"][0][start:end])
+                )
+            return answer.strip() if answer else "I don't know."
 
-        Returns:
-        answer (str): Generated answer from the model
-        """
+        elif mode == "summarization":
+            inputs = self.summ_tokenizer(prompt, return_tensors="pt", truncation=True, max_length=1024).to(self.device)
+            with torch.no_grad():
+                outputs = self.summ_model.generate(
+                    **inputs,
+                    max_new_tokens=max_tokens,
+                    min_length=60,  # force longer output
+                    num_beams=5,  # improve coherence
+                    length_penalty=2.0,  # discourage very short answers
+                    repetition_penalty=1.2,  # avoid "Learn what a..." loops
+                    no_repeat_ngram_size=3,  # avoid repeating phrases
+                    early_stopping=True
+                )
 
-        inputs = self.tokenizer(prompt, return_tensors="pt", truncation=True) # tensors are nothing just a 3D+ matrix
-        with torch.no_grad(): # track that no memory is used for saving data
-            outputs = self.model.generate(**inputs, max_new_tokens=max_tokens)
-        return self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+            return self.summ_tokenizer.decode(outputs[0], skip_special_tokens=True).strip()
+
+        elif mode == "mcq":
+            inputs = self.mcq_tokenizer(prompt, return_tensors="pt", truncation=True, max_length=512, padding=True).to(self.device)
+            with torch.no_grad():
+                outputs = self.mcq_model.generate(
+                    **inputs,
+                    max_new_tokens=10,
+                    num_beams=4,
+                    early_stopping=True
+                )
+            result = self.mcq_tokenizer.decode(outputs[0], skip_special_tokens=True).strip().lower()
+            valid_letters = [chr(97+i) for i in range(len(options))]
+            for letter in valid_letters:
+                if letter in result:
+                    return letter
+            return "invalid"
+
+        elif mode == "classification":
+            inputs = self.classifier_tokenizer(prompt, return_tensors="pt", truncation=True, max_length=128).to(self.device)
+            with torch.no_grad():
+                outputs = self.classifier_model(**inputs)
+            probs = torch.nn.functional.softmax(outputs.logits, dim=1)
+            label = torch.argmax(probs).item()
+            return "Offensive" if label == 1 else "Non-offensive"
+
+        else:
+            return "Unsupported mode"
+
+
