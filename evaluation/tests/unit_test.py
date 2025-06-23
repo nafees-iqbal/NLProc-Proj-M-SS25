@@ -11,10 +11,13 @@ def run_unit_test(evaluation):
     matched, unmatched, results = evaluation.evaluate_model_performance(test_path, log_path)
 
     print(f"\nUnit Test Summary: {matched} matched / {matched + unmatched} total\n")
-    for q, expected, actual, score in results:
-        print(f"Q: {q}")
+
+    for question, expected, actual, f1, rouge in results:
+        print(f"Q: {question}")
         print(f"Expected: {expected}")
         print(f"Actual: {actual}")
-        print(f"Score: {score:.2f}\n")
+        print(f"F1 Score: {f1:.2f}")
+        print(f"ROUGE-L:  {rouge:.2f}\n")
 
     evaluation.visualize_results(matched, unmatched)
+
