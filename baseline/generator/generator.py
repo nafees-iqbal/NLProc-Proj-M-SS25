@@ -48,14 +48,9 @@ class Generator:
     def build_prompt(self, context: str, task_input: str, mode: str = "qa", options: list = None) -> str:
         if mode == "qa":
             return (
-                "You are an assistant for a university-level course.\n"
-                "Use only the provided context to answer the question.\n"
-                "If the answer is not in the context, respond with: I don't know.\n\n"
-                "Example:\n"
-                "Context:\nJava EE stands for Java Platform, Enterprise Edition.\n"
-                "Question:\nWhat is the full form of Java EE?\n"
-                "Answer:\nJava EE stands for Java Platform, Enterprise Edition.\n\n"
-                "Now use the following context to answer the question.\n"
+                "You are a helpful assistant for a university-level course.\n"
+                "Based on the provided context, answer the question concisely.\n"
+                "If the answer is clearly not present in the context, say: I don't know.\n\n"
                 f"Context:\n{context}\n"
                 f"Question:\n{task_input}\n"
                 "Answer:"
@@ -88,25 +83,15 @@ class Generator:
 
     def generate_answer(self, prompt: str, mode: str = "qa", options: list = None, max_tokens: int = 300) -> str:
         if mode == "qa":
-            try:
-                context_block = prompt.split("Context:\n", 1)[1]
-                context, question_block = context_block.split("Question:\n", 1)
-                question = question_block.split("Answer:")[0].strip()
-                context = context.strip()
-            except (IndexError, ValueError) as e:
-                print(f"[ERROR] Failed to parse prompt in QA mode:\n{prompt}\nException: {e}")
-                return "Prompt parse error"
-
-
-            inputs = self.qa_tokenizer(question, context, return_tensors="pt", truncation=True, max_length=512).to(self.device)
+            inputs = self.summ_tokenizer(prompt, return_tensors="pt", truncation=True, max_length=512).to(self.device)
             with torch.no_grad():
-                outputs = self.qa_model(**inputs)
-                start = torch.argmax(outputs.start_logits)
-                end = torch.argmax(outputs.end_logits) + 1
-                answer = self.qa_tokenizer.convert_tokens_to_string(
-                    self.qa_tokenizer.convert_ids_to_tokens(inputs["input_ids"][0][start:end])
+                outputs = self.summ_model.generate(
+                    **inputs,
+                    max_new_tokens=60,
+                    num_beams=4,
+                    early_stopping=True
                 )
-            return answer.strip() if answer else "I don't know."
+            return self.summ_tokenizer.decode(outputs[0], skip_special_tokens=True).strip()
 
         elif mode == "summarization":
             inputs = self.summ_tokenizer(prompt, return_tensors="pt", truncation=True, max_length=1024).to(self.device)

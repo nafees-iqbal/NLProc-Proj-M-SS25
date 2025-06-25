@@ -42,7 +42,7 @@ class Evaluation:
 
             if "context" not in item:
                 if task in ["qa", "classification"]:
-                    retrieved_chunks, _ = retriever.query(question, k=3)
+                    retrieved_chunks, _ = retriever.query(question, k=1)
                     context = "\n\n".join(retrieved_chunks)
                 else:
                     retrieved_chunks = []

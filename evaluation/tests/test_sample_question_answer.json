@@ -10,6 +10,12 @@
     "question": "",
     "context": "A distributed system is a collection of independent computers that appears to its users as a single coherent system. These computers communicate and coordinate their actions by passing messages to one another. The goal of a distributed system is to make a collection of computers appear as a single system to the end user. Common examples include cloud computing platforms, distributed databases, and microservices architectures. Key challenges in distributed systems include fault tolerance, scalability, consistency, and synchronization.",
     "expected_answer": "A distributed system connects independent computers to work as one, coordinating through messaging while addressing challenges like fault tolerance and consistency."
+  },
+  {
+    "task": "qa",
+    "question": "What is the full form of DI?",
+    "context": "DI stands for Dependency Injection.",
+    "expected_answer": "DI full form is Dependency Injection."
   }
 ]
 
