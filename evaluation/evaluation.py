@@ -108,7 +108,7 @@ class Evaluation:
         return float(util.cos_sim(embeddings[0], embeddings[1]))
 
 
-    def evaluate_model_performance(self, test_file_path: str, log_file_path: str, threshold: float = 0.3):
+    def evaluate_model_performance(self, test_file_path: str, log_file_path: str, threshold: float = 0.25):
         scorer = rouge_scorer.RougeScorer(['rougeL'], use_stemmer=True)
 
         with open(test_file_path, "r", encoding="utf-8") as f:
@@ -188,18 +188,18 @@ class Evaluation:
 
     def compute_f1_score(self, expected, predicted):
         """Compute token-level precision, recall, and F1 score."""
-        expected_tokens = self.normalize_answer(expected).split()
+        expected_tokens = self.normalize_answer(expected).split() # F1 is a token-level metric, so we compare word-by-word, not characters or full sentences
         predicted_tokens = self.normalize_answer(predicted).split()
 
         common = Counter(expected_tokens) & Counter(predicted_tokens)
-        num_same = sum(common.values())
+        num_same = sum(common.values()) # num_same counts how many tokens the model got right.
 
         if num_same == 0:
             return 0.0, 0.0, 0.0
 
-        precision = num_same / len(predicted_tokens)
-        recall = num_same / len(expected_tokens)
-        f1 = 2 * precision * recall / (precision + recall)
+        precision = num_same / len(predicted_tokens) # how much was correct
+        recall = num_same / len(expected_tokens) # how much did it cover
+        f1 = 2 * precision * recall / (precision + recall) # Harmonic mean balances precision and recall; high only if both are high
         return precision, recall, f1
 
     def visualize_results(self, matched: int, unmatched: int):

@@ -16,6 +16,17 @@
     "question": "What is the full form of DI?",
     "context": "DI stands for Dependency Injection.",
     "expected_answer": "DI full form is Dependency Injection."
+  },
+  {
+    "task": "classification",
+    "question": "You are ugly and stupid!",
+    "context": "Profanity, hate speech, and personal attacks are considered offensive.",
+    "expected_answer": "Offensive"
+  },
+  {
+    "task": "qa",
+    "question": "How many types of Google firestore?",
+    "expected_answer": "Google firestore has 2 types."
   }
 ]
 
