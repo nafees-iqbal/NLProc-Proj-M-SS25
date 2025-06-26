@@ -8,6 +8,7 @@ from sklearn.metrics import precision_score, recall_score, f1_score
 import re
 from collections import Counter
 from rouge_score import rouge_scorer
+from bert_score import score as bert_score
 
 model = SentenceTransformer("all-MiniLM-L6-v2")
 
@@ -86,6 +87,7 @@ class Evaluation:
                 "task": task,
                 "retrieved_chunks": retrieved_chunks,
                 "prompt": prompt,
+                "context": context,
                 "generated_answer": answer,
                 "timestamp": datetime.now().isoformat(timespec='seconds'),
                 "group_id": "Team NNN"
@@ -106,6 +108,29 @@ class Evaluation:
         """
         embeddings = model.encode([expected, actual], convert_to_tensor=True)
         return float(util.cos_sim(embeddings[0], embeddings[1]))
+    
+    def evaluate_bert_score(expected_list, predicted_list, lang='en', model_type='microsoft/deberta-xlarge-mnli'):
+        """
+        Compute BERTScore between lists of expected and predicted answers.
+        
+        Args:
+            expected_list (List[str]): Ground truth answers.
+            predicted_list (List[str]): Model-generated answers.
+            lang (str): Language code (default: 'en').
+            model_type (str): Model to use for BERTScore (default: DeBERTa MNLI, good for English).
+
+        Returns:
+            avg_precision, avg_recall, avg_f1, all_f1s: Averages and per-sample F1s.
+        """
+        assert len(expected_list) == len(predicted_list), "Expected and predicted lists must be the same length."
+
+        P, R, F1 = bert_score(predicted_list, expected_list, lang=lang, model_type=model_type, verbose=True)
+        
+        avg_precision = P.mean().item()
+        avg_recall    = R.mean().item()
+        avg_f1        = F1.mean().item()
+
+        return avg_precision, avg_recall, avg_f1, F1.tolist()
 
 
     def evaluate_model_performance(self, test_file_path: str, log_file_path: str, threshold: float = 0.25):
@@ -131,7 +156,12 @@ class Evaluation:
             question = test_item["question"]
             expected_answer = test_item["expected_answer"]
 
-            matching_logs = [log for log in log_data if log["question"] == question]
+            if test_item["task"] == "summarization":
+                context = test_item.get("context", "").strip()
+                matching_logs = [log for log in log_data if log["task"] == "summarization" and log.get("context", "").strip() == context]
+            else:
+                matching_logs = [log for log in log_data if log["question"] == question]
+
             if not matching_logs:
                 unmatched += 1
                 detailed_results.append((question, expected_answer, None, 0, 0))
@@ -168,6 +198,93 @@ class Evaluation:
         print(f"Average ROUGE-L:   {avg_rouge:.2f}")
 
         return matched, unmatched, detailed_results
+    
+
+    def evaluate_model_performance2(self, test_file_path: str, log_file_path: str, threshold: float = 0.25):
+        scorer = rouge_scorer.RougeScorer(['rougeL'], use_stemmer=True)
+
+        with open(test_file_path, "r", encoding="utf-8") as f:
+            test_data = json.load(f)
+
+        with open(log_file_path, "r", encoding="utf-8") as f:
+            log_data = json.load(f)
+
+        detailed_results = []
+
+        total_precision = 0
+        total_recall = 0
+        total_f1 = 0
+        total_rouge = 0
+        f1_count = 0
+
+        matched = 0
+        unmatched = 0
+
+        # For BERTScore calculation
+        question_pairs = []
+        bert_expected = []
+        bert_predicted = []
+
+        for test_item in test_data:
+            question = test_item["question"]
+            expected_answer = test_item["expected_answer"]
+
+            if test_item["task"] == "summarization":
+                context = test_item.get("context", "").strip()
+                matching_logs = [log for log in log_data if log["task"] == "summarization" and log.get("context", "").strip() == context]
+            else:
+                matching_logs = [log for log in log_data if log["question"] == question]
+
+            if not matching_logs:
+                unmatched += 1
+                detailed_results.append((question, expected_answer, None, 0, 0, 0))  # F1, ROUGE, BERT F1
+                continue
+
+            generated_answer = matching_logs[-1]["generated_answer"]
+
+            precision, recall, f1 = self.compute_f1_score(expected_answer, generated_answer)
+            rouge_score = scorer.score(expected_answer, generated_answer)["rougeL"].fmeasure
+
+            total_precision += precision
+            total_recall += recall
+            total_f1 += f1
+            total_rouge += rouge_score
+            f1_count += 1
+
+            bert_expected.append(expected_answer)
+            bert_predicted.append(generated_answer)
+            question_pairs.append((question, expected_answer, generated_answer, f1, rouge_score))  # BERT to be appended later
+
+        # Calculate BERTScore once
+        if bert_expected and bert_predicted:
+            P, R, F1 = bert_score(bert_predicted, bert_expected, lang='en', model_type='microsoft/deberta-xlarge-mnli', verbose=True)
+            bert_f1_list = F1.tolist()
+        else:
+            bert_f1_list = []
+
+        for i, (question, expected, actual, f1, rouge) in enumerate(question_pairs):
+            bert_f1 = bert_f1_list[i]
+            if bert_f1 >= threshold:
+                matched += 1
+            else:
+                unmatched += 1
+            detailed_results.append((question, expected, actual, f1, rouge, bert_f1))
+
+        avg_precision = total_precision / f1_count if f1_count else 0
+        avg_recall = total_recall / f1_count if f1_count else 0
+        avg_f1 = total_f1 / f1_count if f1_count else 0
+        avg_rouge = total_rouge / f1_count if f1_count else 0
+        avg_bert_f1 = sum(bert_f1_list) / len(bert_f1_list) if bert_f1_list else 0
+
+        print(f"\nToken-level Evaluation Metrics:")
+        print(f"Average Precision:    {avg_precision:.2f}")
+        print(f"Average Recall:       {avg_recall:.2f}")
+        print(f"Average F1 Score:     {avg_f1:.2f}")
+        print(f"Average ROUGE-L:      {avg_rouge:.2f}")
+        print(f"Average BERTScore F1: {avg_bert_f1:.2f}")
+
+        return matched, unmatched, detailed_results
+
 
     def normalize_answer(self, s):
         """Lower text and remove punctuation, articles and extra whitespace."""

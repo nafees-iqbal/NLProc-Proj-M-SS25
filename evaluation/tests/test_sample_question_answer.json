@@ -8,7 +8,7 @@
   {
     "task": "summarization",
     "question": "",
-    "context": "A distributed system is a collection of independent computers that appears to its users as a single coherent system. These computers communicate and coordinate their actions by passing messages to one another. The goal of a distributed system is to make a collection of computers appear as a single system to the end user. Common examples include cloud computing platforms, distributed databases, and microservices architectures. Key challenges in distributed systems include fault tolerance, scalability, consistency, and synchronization.",
+    "context": "Summarize the distributed system",
     "expected_answer": "A distributed system connects independent computers to work as one, coordinating through messaging while addressing challenges like fault tolerance and consistency."
   },
   {
@@ -27,6 +27,12 @@
     "task": "qa",
     "question": "How many types of Google firestore?",
     "expected_answer": "Google firestore has 2 types."
+  },
+  {
+    "task": "summarization",
+    "question": "",
+    "context": "Summarize the google firestore",
+    "expected_answer": "The google firestore is a file storage service that allows you to store and retrieve files and folders from your computer. It's similar to a cloud storage service, but instead of storing files on your computer, it stores them on Google's servers. You can use this service to store files, folders, and other types of files."
   }
 ]
 

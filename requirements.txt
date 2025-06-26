@@ -10,5 +10,6 @@ PyMuPDF
 python-docx
 torch
 sentencepiece
-rouge-score      
+rouge-score 
+bert-score     
 
