@@ -1,0 +1,90 @@
+<html>
+
+    <head>
+        <title>
+            University Courses RAG System
+        </title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="js/script.js"></script>
+        <link rel="stylesheet" href="css/styles.css" />
+    </head>
+    <body>
+        <nav>
+            <div onclick="handleMenuOpen()" class="ham-menu">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div>Old conversation 1</div>
+            <div class="new-chat">+</div>
+          </nav>
+          <div id="main">
+            <div id="sidenav">
+              <div class="sidenav-content">
+                <button id="close" onclick="handleMenuClose()"><span></span></button>
+                <button id="new-chat-btn">+ New chat</button>
+                <div class="saved-chats">
+                  <p class="selected">Old conversation 1</p>
+                  <p>Old conversation 2</p>
+                </div>
+                <div class="config">
+                  <hr />
+                  <p>Clear conversations</p>
+                  <p>Dark mode</p>
+                  <p>Update & FAQs</p>
+                  <p>Log out</p>
+                </div>
+              </div>
+            </div>
+            <div id="content-body">
+              <div id="messages">
+                <div class="user-message message">
+                  <div class="message-div">
+                    <div class="message-profile-pic"><img src="https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png" height="30" width='30' /></div>
+                    <div class="message-content">
+                      <p>can openai perform queries if mongodb uri is given?</p>
+                    </div>
+                  </div>
+                  </di>
+                </div>
+                <div class="gpt-message message">
+                  <div class="message-div">
+                    <div class="message-profile-pic"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/ChatGPT_logo.svg/900px-ChatGPT_logo.svg.png" height="30" width='30' /></div>
+                    <div class="message-content">
+                      <p>No, OpenAI cannot perform queries directly against a MongoDB database by itself. OpenAI is primarily an artificial intelligence language model that is designed to perform natural language processing tasks such as generating text or answering questions.</p>
+                      <p>To execute queries against a MongoDB database, you need to use a driver library or ORM in your server-side code to establish a connection with the database and execute queries. Once you have the query results, you can then pass them to OpenAI for processing and analysis.</p>
+                      <p>For example, you could use a Node.js MongoDB driver such as Mongoose to connect to your MongoDB database, execute queries and retrieve data. Once you have the data, you could then pass it to OpenAI to perform natural language processing tasks like summarization or sentiment analysis.</p>
+                      <p>In summary, you would need to use both MongoDB driver and OpenAI API to execute queries against the database and perform natural language processing tasks on the results.</p>
+                    </div>
+                  </div>
+                  </di>
+                </div>
+                <div class="user-message message">
+                  <div class="message-div">
+                    <div class="message-profile-pic"><img src="https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png" height="30" width='30' /></div>
+                    <div class="message-content">
+                      <p>can i use you to analyse data from mongodb?</p>
+                    </div>
+                  </div>
+                  </di>
+                </div>
+                <div class="gpt-message message">
+                  <div class="message-div">
+                    <div class="message-profile-pic"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/ChatGPT_logo.svg/900px-ChatGPT_logo.svg.png" height="30" width='30' /></div>
+                    <div class="message-content">
+                      <p>As an AI language model, I can help you perform natural language processing (NLP) tasks such as summarizing or extracting meaning from text data that you provide to me. However, I do not have the ability to directly access your MongoDB data or execute queries against your database.</p>
+                      <p>To work with data in MongoDB, you would need to use a database driver or an ORM to connect to your database and retrieve the data you need. Once you have the data, you can then pass it to me as input for various NLP tasks.</p>
+                      <p>For example, you could use a Node.js MongoDB driver like Mongoose to retrieve data from your database and then pass the data to me for NLP tasks like sentiment analysis or text classification. You would need to integrate the driver with your server-side code and make API calls to OpenAI to analyze the data.</p>
+                      <p>If you have specific questions or tasks that you need help with related to NLP and data analysis, feel free to ask and I'll do my best to assist you.</p>
+                    </div>
+                  </div>
+                  </di>
+                </div>
+              </div>
+              <div id="chat-section">
+                <div><input type="text" /></div>
+              </div>
+            </div>
+    </body>
+</html>
