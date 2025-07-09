@@ -30,33 +30,28 @@ document.querySelector("#chat-section input").addEventListener("keydown", async 
 
         const messagesDiv = document.getElementById("messages");
 
-        // Add user message
         const userMsg = document.createElement("div");
         userMsg.className = "user-message message";
         userMsg.innerHTML = `<div class="message-div">
-          <div class="message-profile-pic"><img src="..." height="30" width="30" /></div>
+          <div class="message-profile-pic"><img src="img/user.png" height="30" width="30" /></div>
           <div class="message-content"><p>${userInput}</p></div>
         </div>`;
         messagesDiv.appendChild(userMsg);
 
-        e.target.value = ""; // clear input
+        e.target.value = "";
 
-        // Show loading
         const botMsg = document.createElement("div");
         botMsg.className = "gpt-message message";
         botMsg.innerHTML = `<div class="message-div">
-          <div class="message-profile-pic"><img src="..." height="30" width="30" /></div>
+          <div class="message-profile-pic"><img src="img/chat-gpt.png" height="30" width="30" /></div>
           <div class="message-content"><p>Loading...</p></div>
         </div>`;
         messagesDiv.appendChild(botMsg);
 
-        // Fetch response
         const answer = await sendQuestion(userInput);
 
-        // Update bot message
         botMsg.querySelector(".message-content p").textContent = answer;
 
-        // Scroll to bottom
         messagesDiv.scrollTop = messagesDiv.scrollHeight;
     }
 });

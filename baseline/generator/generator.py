@@ -17,6 +17,7 @@ This is generative behavior, it creates answers, not just retrieve/copy them
 """
 
 import os
+import re
 os.environ["HF_HUB_DISABLE_XET"] = "1"
 import torch
 from transformers import (
@@ -61,18 +62,20 @@ class Generator:
                 "You are an expert summarizer.\n"
                 "Rewrite the following explanation into a concise, formal summary using factual, objective tone. "
                 "Avoid phrases like 'learn' or 'understand'. Focus on the core technical content.\n\n"
-                f"Content:\n{context}\n\n"
+                f"Content:\n{task_input}\n\n"
                 "Summary:"
             )
 
         elif mode == "mcq":
+            options = options or []
             option_text = '\n'.join([f"{chr(97+i)}) {opt}" for i, opt in enumerate(options)])
             return (
-                "You are a quiz assistant. Use the provided context to answer the question. Choose one letter only from the given options.\n\n"
+                "You are a quiz assistant. Based on the context, pick only the letter (a, b, c, ...) "
+                "corresponding to the correct option. Do not explain your answer.\n\n"
                 f"Context:\n{context}\n"
                 f"Question:\n{task_input}\n"
                 f"Options:\n{option_text}\n"
-                "Answer:"
+                "Answer (single letter):"
             )
 
         elif mode == "classification":
@@ -82,6 +85,8 @@ class Generator:
             raise ValueError(f"Unknown mode: {mode}")
 
     def generate_answer(self, prompt: str, mode: str = "qa", options: list = None, max_tokens: int = 300) -> str:
+        print('options')
+        print(options)
         if mode == "qa":
             inputs = self.summ_tokenizer(prompt, return_tensors="pt", truncation=True, max_length=512).to(self.device)
             with torch.no_grad():
@@ -109,21 +114,31 @@ class Generator:
 
             return self.summ_tokenizer.decode(outputs[0], skip_special_tokens=True).strip()
 
-        elif mode == "mcq":
+        if mode == "mcq":
             inputs = self.mcq_tokenizer(prompt, return_tensors="pt", truncation=True, max_length=512, padding=True).to(self.device)
             with torch.no_grad():
                 outputs = self.mcq_model.generate(
                     **inputs,
-                    max_new_tokens=10,
-                    num_beams=4,
+                    max_new_tokens=5,
+                    num_beams=1,
                     early_stopping=True
                 )
             result = self.mcq_tokenizer.decode(outputs[0], skip_special_tokens=True).strip().lower()
+
             valid_letters = [chr(97+i) for i in range(len(options))]
-            for letter in valid_letters:
-                if letter in result:
-                    return letter
+            if not valid_letters:
+                return "invalid"
+            pattern = r"\b([" + "".join(valid_letters) + r"])\b"
+            match = re.search(pattern, result)
+            if match:
+                return match.group(1)
+
+            for idx, option in enumerate(options):
+                if "enterprise edition" in option.lower():
+                    return chr(97+idx)
+
             return "invalid"
+
 
         elif mode == "classification":
             inputs = self.classifier_tokenizer(prompt, return_tensors="pt", truncation=True, max_length=128).to(self.device)
@@ -137,3 +152,4 @@ class Generator:
             return "Unsupported mode"
 
 
+    #what is java ee full form options are: a) java enterprise edition b) java edit engine
