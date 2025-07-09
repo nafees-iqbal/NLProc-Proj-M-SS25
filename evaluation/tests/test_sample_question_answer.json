@@ -6,9 +6,15 @@
   },
 
   {
-    "task": "qa",
-    "question": "What is ORM?",
+    "task": "summarization",
+    "question": "summarization the ORM?",
     "expected_answer": "ORM stands for object-relational mapping. It is a technique that maps Java objects to database tables, so we can interact with a database using objects instead of SQL."
+  },
+
+  {
+    "task": "qa",
+    "question": "What is Hibernate?",
+    "expected_answer": "Hibernate is a popular ORM-framework for Java."
   },
 
   {
@@ -43,6 +49,13 @@
     "question": "What is java ee full form options: a) java enterprise edition b) java edit enforce",
     "expected_answer": "a"
   },
+
+  {
+    "task": "mcq",
+    "question": "Which is a cloud service model from options: a) Hibernate b) Iaas",
+    "expected_answer": "b"
+  },
+  
   {
     "task": "summarization",
     "question": "Summarize the spring boot",
