@@ -55,6 +55,18 @@
     "question": "Which is a cloud service model from options: a) Hibernate b) Iaas",
     "expected_answer": "b"
   },
+
+  {
+    "task": "mcq",
+    "question": "Which is a Backend-as-a-service form options: a) Firestore b) Hibernate c) Firebase",
+    "expected_answer": "c"
+  },
+  
+  {
+    "task": "mcq",
+    "question": "Which one is related to Firestore form options: a) Documents b) Hibernate c) Cloud d) App",
+    "expected_answer": "a"
+  },
   
   {
     "task": "summarization",
