@@ -77,6 +77,12 @@
     "question": "Summarize the JPA",
     "expected_answer": "JPA (Java Persistence API) is a specification in Java for managing relational data in applications. It provides a framework for mapping Java objects to database tables and handling CRUD (Create, Read, Update, Delete) operations."
   }
+
+  {
+    "task": "summarization",
+    "question": "Summarize the H2 database",
+    "expected_answer": "H2 database is a lightweight, fast, open-source relational database written in Java. It is an in-memory database often used for development, testing or small-scale apps."
+  },
   
 ]
 
