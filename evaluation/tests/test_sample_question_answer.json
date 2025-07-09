@@ -25,13 +25,11 @@
   {
     "task": "qa",
     "question": "What is the full form of DI?",
-    "context": "DI stands for Dependency Injection.",
     "expected_answer": "DI full form is Dependency Injection."
   },
   {
     "task": "classification",
     "question": "You are ugly and stupid!",
-    "context": "Profanity, hate speech, and personal attacks are considered offensive.",
     "expected_answer": "Offensive"
   },
   {
@@ -73,5 +71,12 @@
     "question": "Summarize the spring boot",
     "expected_answer": ""
   },
+
+  {
+    "task": "summarization",
+    "question": "Summarize the JPA",
+    "expected_answer": "JPA (Java Persistence API) is a specification in Java for managing relational data in applications. It provides a framework for mapping Java objects to database tables and handling CRUD (Create, Read, Update, Delete) operations."
+  },
+  
 ]
 
