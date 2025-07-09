@@ -76,7 +76,7 @@
     "task": "summarization",
     "question": "Summarize the JPA",
     "expected_answer": "JPA (Java Persistence API) is a specification in Java for managing relational data in applications. It provides a framework for mapping Java objects to database tables and handling CRUD (Create, Read, Update, Delete) operations."
-  },
+  }
   
 ]
 
