@@ -36,6 +36,11 @@
     "task": "mcq",
     "question": "What is java ee full form options: a) java enterprise edition b) java edit enforce",
     "expected_answer": "a"
-  }
+  },
+  {
+    "task": "summarization",
+    "question": "Summarize the spring boot",
+    "expected_answer": ""
+  },
 ]
 
