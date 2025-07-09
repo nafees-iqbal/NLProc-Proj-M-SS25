@@ -31,6 +31,11 @@
     "task": "summarization",
     "question": "Summarize the google firestore",
     "expected_answer": "The google firestore is a file storage service that allows you to store and retrieve files and folders from your computer. It's similar to a cloud storage service, but instead of storing files on your computer, it stores them on Google's servers. You can use this service to store files, folders, and other types of files."
+  },
+  {
+    "task": "mcq",
+    "question": "What is java ee full form options: a) java enterprise edition b) java edit enforce",
+    "expected_answer": "a"
   }
 ]
 
