@@ -83,6 +83,95 @@
     "question": "Summarize the H2 database",
     "expected_answer": "H2 database is a lightweight, fast, open-source relational database written in Java. It is an in-memory database often used for development, testing or small-scale apps."
   },
+
+  {
+    "task": "qa",
+    "question": "What is the Java EE full form?",
+    "expected_answer": "Java EE full form is Java Enterprise Edition."
+  },
+
+  {
+    "task": "qa",
+    "question": "What is the full form of DI?",
+    "context": "DI stands for Dependency Injection.",
+    "expected_answer": "DI full form is Dependency Injection."
+  },
+
+  {
+    "task": "qa",
+    "question": "How many types of Google firestore?",
+    "expected_answer": "Google firestore has 2 types."
+  },
+
+  {
+    "task": "qa",
+    "question": "What is JPA?",
+    "expected_answer": "JPA is a component in Spring Boot for data persistence and managing relational data."
+  },
+
+  {
+    "task": "qa",
+    "question": "What is kubernetes?",
+    "expected_answer": "Kubernetes is a tool that automatically manages and runs your apps in containers."
+  },
+
+
+  {
+    "task": "qa",
+    "question": "What is Firebase?",
+    "expected_answer": "Firebase is a platform developed by Google for creating mobile and web applications."
+  },
+  
+
+  {
+    "task": "summarization",
+    "question": "Summarize the distributed system",
+    "expected_answer": "A distributed system connects independent computers to work as one, coordinating through messaging while addressing challenges like fault tolerance and consistency."
+  },
+
+  {
+    "task": "summarization",
+    "question": "Summarize the google firestore",
+    "expected_answer": "The google firestore is a file storage service that allows you to store and retrieve files and folders from your computer. It's similar to a cloud storage service, but instead of storing files on your computer, it stores them on Google's servers. You can use this service to store files, folders, and other types of files."
+  },
+
+  {
+    "task": "summarization",
+    "question": "Summarize the spring boot",
+    "expected_answer": ""
+  },
+
+  {
+    "task": "summarization",
+    "question": "Summarize CRUD",
+    "expected_answer": "CRUD = Create, Read, Update, Delete — the four basic actions to manage data in an app or database."
+  },
+
+  {
+    "task": "summarization",
+    "question": "Summarize Google Cloud Engine",
+    "expected_answer": "Google Cloud Engine is Google’s service for running virtual machines in the cloud.It allows creating, managing, and scaling virtual servers on Google’s powerful infrastructure."
+  },
+
+  {
+    "task": "summarization",
+    "question": "Summarize REST",
+    "expected_answer": "REST is a simple way for systems to communicate over the web.It uses standard HTTP methods (GET, POST, PUT, DELETE) to create, read, update, and delete data."
+  },
+  
+  
+  {
+    "task": "classification",
+    "question": "You are ugly and stupid!",
+    "context": "Profanity, hate speech, and personal attacks are considered offensive.",
+    "expected_answer": "Offensive"
+  },
+    
+  {
+    "task": "mcq",
+    "question": "What is java ee full form options: a) java enterprise edition b) java edit enforce",
+    "expected_answer": "a"
+  },
   
 ]
 
