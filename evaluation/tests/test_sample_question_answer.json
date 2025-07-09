@@ -7,10 +7,30 @@
 
   {
     "task": "summarization",
-    "question": "summarization the ORM?",
-    "expected_answer": "ORM stands for object-relational mapping. It is a technique that maps Java objects to database tables, so we can interact with a database using objects instead of SQL."
+    "question": "Summarize the distributed system",
+    "expected_answer": "A distributed system connects independent computers to work as one, coordinating through messaging while addressing challenges like fault tolerance and consistency."
+  },
+  
+  {
+    "task": "qa",
+    "question": "What is the full form of DI?",
+    "expected_answer": "DI full form is Dependency Injection."
+  },
+  
+  {
+    "task": "classification",
+    "question": "You are ugly and stupid!",
+    "expected_answer": "Offensive"
+  },
+  
+  {
+    "task": "mcq",
+    "question": "What is java ee full form options: a) java enterprise edition b) java edit enforce",
+    "expected_answer": "a"
   },
 
+
+  
   {
     "task": "qa",
     "question": "What is Hibernate?",
@@ -18,52 +38,15 @@
   },
 
   {
-    "task": "summarization",
-    "question": "Summarize the distributed system",
-    "expected_answer": "A distributed system connects independent computers to work as one, coordinating through messaging while addressing challenges like fault tolerance and consistency."
-  },
-  {
     "task": "qa",
-    "question": "What is the full form of DI?",
-    "expected_answer": "DI full form is Dependency Injection."
-  },
-  {
-    "task": "classification",
-    "question": "You are ugly and stupid!",
-    "expected_answer": "Offensive"
-  },
-  {
-    "task": "qa",
-    "question": "How many types of Google firestore?",
-    "expected_answer": "Google firestore has 2 types."
-  },
-  {
-    "task": "summarization",
-    "question": "Summarize the google firestore",
-    "expected_answer": "The google firestore is a file storage service that allows you to store and retrieve files and folders from your computer. It's similar to a cloud storage service, but instead of storing files on your computer, it stores them on Google's servers. You can use this service to store files, folders, and other types of files."
-  },
-  {
-    "task": "mcq",
-    "question": "What is java ee full form options: a) java enterprise edition b) java edit enforce",
-    "expected_answer": "a"
-  },
-
-  {
-    "task": "mcq",
-    "question": "Which is a cloud service model from options: a) Hibernate b) Iaas",
-    "expected_answer": "b"
-  },
-
-  {
-    "task": "mcq",
-    "question": "Which is a Backend-as-a-service form options: a) Firestore b) Hibernate c) Firebase",
-    "expected_answer": "c"
+    "question": "What is the full form of Faas?",
+    "expected_answer": "Faas stands for Function as a service."
   },
   
   {
-    "task": "mcq",
-    "question": "Which one is related to Firestore form options: a) Documents b) Hibernate c) Cloud d) App",
-    "expected_answer": "a"
+    "task": "summarization",
+    "question": "summarization the ORM?",
+    "expected_answer": "ORM stands for object-relational mapping. It is a technique that maps Java objects to database tables, so we can interact with a database using objects instead of SQL."
   },
   
   {
@@ -85,18 +68,25 @@
   },
 
   {
-    "task": "qa",
-    "question": "What is the Java EE full form?",
-    "expected_answer": "Java EE full form is Java Enterprise Edition."
+    "task": "mcq",
+    "question": "Which is a cloud service model from options: a) Hibernate b) Iaas",
+    "expected_answer": "b"
   },
 
   {
-    "task": "qa",
-    "question": "What is the full form of DI?",
-    "context": "DI stands for Dependency Injection.",
-    "expected_answer": "DI full form is Dependency Injection."
+    "task": "mcq",
+    "question": "Which is a Backend-as-a-service form options: a) Firestore b) Hibernate c) Firebase",
+    "expected_answer": "c"
+  },
+  
+  {
+    "task": "mcq",
+    "question": "Which one is related to Firestore form options: a) Documents b) Hibernate c) Cloud d) App",
+    "expected_answer": "a"
   },
 
+
+  
   {
     "task": "qa",
     "question": "How many types of Google firestore?",
@@ -115,30 +105,16 @@
     "expected_answer": "Kubernetes is a tool that automatically manages and runs your apps in containers."
   },
 
-
   {
     "task": "qa",
     "question": "What is Firebase?",
     "expected_answer": "Firebase is a platform developed by Google for creating mobile and web applications."
-  },
-  
-
-  {
-    "task": "summarization",
-    "question": "Summarize the distributed system",
-    "expected_answer": "A distributed system connects independent computers to work as one, coordinating through messaging while addressing challenges like fault tolerance and consistency."
   },
 
   {
     "task": "summarization",
     "question": "Summarize the google firestore",
     "expected_answer": "The google firestore is a file storage service that allows you to store and retrieve files and folders from your computer. It's similar to a cloud storage service, but instead of storing files on your computer, it stores them on Google's servers. You can use this service to store files, folders, and other types of files."
-  },
-
-  {
-    "task": "summarization",
-    "question": "Summarize the spring boot",
-    "expected_answer": ""
   },
 
   {
@@ -159,16 +135,7 @@
     "expected_answer": "REST is a simple way for systems to communicate over the web.It uses standard HTTP methods (GET, POST, PUT, DELETE) to create, read, update, and delete data."
   },
   
-  
   {
-    "task": "classification",
-    "question": "You are ugly and stupid!",
-    "context": "Profanity, hate speech, and personal attacks are considered offensive.",
-    "expected_answer": "Offensive"
-  },
-    
-
-   {
     "task": "mcq",
     "question": "What type of database is Firestore? options: a) A relational SQL database b) A NoSQL document database  c) A file storage system",
     "expected_answer": "b"
