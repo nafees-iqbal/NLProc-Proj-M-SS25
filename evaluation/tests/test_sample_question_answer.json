@@ -69,7 +69,7 @@
   {
     "task": "summarization",
     "question": "Summarize the spring boot",
-    "expected_answer": ""
+    "expected_answer": "Spring Boot is a framework that simplifies the setup and development of Spring applications. It provides default configurations and embedded servers, which makes it easier to build standalone, production-grade Spring applications quickly."
   },
 
   {
