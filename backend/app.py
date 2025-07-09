@@ -21,7 +21,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Load index
 pipeline.setup_index()
 
 class QueryRequest(BaseModel):
@@ -32,7 +31,6 @@ class QueryRequest(BaseModel):
 
 @app.post("/ask")
 async def ask_question(req: QueryRequest):
-    print(req)
     result = pipeline.process_question(
         question=req.question,
         task=req.task,

@@ -10,9 +10,11 @@ sys.path.append(os.path.dirname(SCRIPT_DIR))
 
 from baseline.retriever.retreiver import Retriever
 from baseline.generator.generator import Generator
+from evaluation.evaluation import Evaluation
 
 retriever = Retriever()
 generator = Generator()
+evaluation = Evaluation()
 
 index_path = "retriever_index"
 index_file = f"{index_path}.faiss"
@@ -51,7 +53,10 @@ class Pipeline:
             task = "classification"
 
         if not context:
-            if task in ["qa", "classification"]:
+            print('task: ')
+            print(task)
+            if task in ["qa", "classification", "summarization"]:
+                print(question)
                 retrieved_chunks, _ = retriever.query(question, k=3)
                 context = "\n\n".join(retrieved_chunks)
             else:
@@ -74,8 +79,6 @@ class Pipeline:
     
         answer = generator.generate_answer(prompt, mode=task, options=options)
 
-        print(answer)
-
         if task == "mcq":
             valid_letters = [chr(97+i) for i in range(len(options or []))]
             answer = answer.strip().lower()
@@ -86,6 +89,19 @@ class Pipeline:
                         break
                 else:
                     answer = "invalid"
+
+        with open("evaluation/tests/test_sample_question_answer.json", "r", encoding="utf-8") as f:
+            test_data = json.load(f)
+
+        expected_answer = None
+        for item in test_data:
+            if item["question"].strip() == question.strip():
+                expected_answer = item.get("expected_answer")
+                break
+
+        evaluation_result = {}
+        if expected_answer:
+            evaluation_result = evaluation.evaluate_single_prediction(question, expected_answer, answer)
 
         log_file = os.path.join(log_dir, datetime.now().strftime("%d-%m-%Y") + ".json")
         if os.path.exists(log_file):
@@ -102,12 +118,13 @@ class Pipeline:
             "context": context,
             "generated_answer": answer,
             "timestamp": datetime.now().isoformat(timespec='seconds'),
-            "group_id": group_id
+            "group_id": group_id,
+            "evaluation": evaluation_result 
         }
-        '''log_entries.append(log_entry)
+        log_entries.append(log_entry)
 
         with open(log_file, "w", encoding="utf-8") as f:
-            json.dump(log_entries, f, indent=4)'''
+            json.dump(log_entries, f, indent=4)
 
         return {
             "answer": answer,

@@ -2,5 +2,11 @@
     "cSpell.words": [
         "Faiss",
         "retreiver"
+    ],
+    "liveServer.settings.ignoreFiles": [
+        "**/*.log",
+        "**/logs/**",
+        "**/storage/logs/**",
+        "**/var/log/**"
     ]
 }

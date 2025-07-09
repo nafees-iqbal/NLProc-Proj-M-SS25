@@ -337,4 +337,29 @@ class Evaluation:
         plt.axis('equal')
         plt.tight_layout()
         plt.show()
+    def evaluate_single_prediction(self, question, expected_answer, generated_answer, threshold=0.25):
+        scorer = rouge_scorer.RougeScorer(['rougeL'], use_stemmer=True)
+
+        precision, recall, f1 = self.compute_f1_score(expected_answer, generated_answer)
+
+        rouge = scorer.score(expected_answer, generated_answer)["rougeL"].fmeasure
+
+        P, R, F1 = bert_score([generated_answer], [expected_answer],
+                            lang='en', model_type='microsoft/deberta-xlarge-mnli', verbose=False)
+        bert_f1 = F1.tolist()[0]
+
+        is_match = bert_f1 >= threshold
+
+        return {
+            "question": question,
+            "expected_answer": expected_answer,
+            "generated_answer": generated_answer,
+            "precision": precision,
+            "recall": recall,
+            "f1": f1,
+            "rouge_l": rouge,
+            "bert_f1": bert_f1,
+            "bert_match_threshold": threshold,
+            "is_match": is_match
+        }
 
