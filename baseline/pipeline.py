@@ -74,15 +74,9 @@ class Pipeline:
     
         answer = generator.generate_answer(prompt, mode=task, options=options)
 
-        if task == "classification":
-            answer = answer.strip().lower()
-            if "offensive" in answer:
-                answer = "Offensive"
-            elif "non-offensive" in answer:
-                answer = "Non-offensive"
-            else:
-                answer = "Unclear"
-        elif task == "mcq":
+        print(answer)
+
+        if task == "mcq":
             valid_letters = [chr(97+i) for i in range(len(options or []))]
             answer = answer.strip().lower()
             if answer not in valid_letters:

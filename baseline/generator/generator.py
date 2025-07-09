@@ -85,8 +85,7 @@ class Generator:
             raise ValueError(f"Unknown mode: {mode}")
 
     def generate_answer(self, prompt: str, mode: str = "qa", options: list = None, max_tokens: int = 300) -> str:
-        print('options')
-        print(options)
+        
         if mode == "qa":
             inputs = self.summ_tokenizer(prompt, return_tensors="pt", truncation=True, max_length=512).to(self.device)
             with torch.no_grad():
@@ -115,6 +114,8 @@ class Generator:
             return self.summ_tokenizer.decode(outputs[0], skip_special_tokens=True).strip()
 
         if mode == "mcq":
+            print('options')
+            print(options)
             inputs = self.mcq_tokenizer(prompt, return_tensors="pt", truncation=True, max_length=512, padding=True).to(self.device)
             with torch.no_grad():
                 outputs = self.mcq_model.generate(
@@ -146,7 +147,8 @@ class Generator:
                 outputs = self.classifier_model(**inputs)
             probs = torch.nn.functional.softmax(outputs.logits, dim=1)
             label = torch.argmax(probs).item()
-            return "Offensive" if label == 1 else "Non-offensive"
+            print(label)
+            return "Offensive" if label == 0 else "Non-offensive"
 
         else:
             return "Unsupported mode"
