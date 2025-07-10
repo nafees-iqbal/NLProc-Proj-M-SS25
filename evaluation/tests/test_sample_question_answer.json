@@ -111,6 +111,12 @@
 
   {
     "task": "classification",
+    "question": "This system is ridiculous!",
+    "expected_answer": "Offensive"
+  },
+
+  {
+    "task": "classification",
     "question": "I hate coding!",
     "expected_answer": "Offensive"
   },
@@ -142,6 +148,12 @@
   {
     "task": "classification",
     "question": "This is an awful and useless system!",
+    "expected_answer": "Offensive"
+  },
+
+  {
+    "task": "classification",
+    "question": "I hate this stupid prompt system!",
     "expected_answer": "Offensive"
   },
   
