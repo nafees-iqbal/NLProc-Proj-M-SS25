@@ -109,6 +109,43 @@
     "expected_answer": "a"
   },
 
+  {
+    "task": "classification",
+    "question": "I hate coding!",
+    "expected_answer": "Offensive"
+  },
+
+  {
+    "task": "classification",
+    "question": "You are too old!",
+    "expected_answer": "Offensive"
+  },
+
+  {
+    "task": "classification",
+    "question": "You are not helpful!",
+    "expected_answer": "Offensive"
+  },
+
+  {
+    "task": "classification",
+    "question": "You are useless!",
+    "expected_answer": "Offensive"
+  },
+
+  {
+    "task": "classification",
+    "question": "You are disgusting!",
+    "expected_answer": "Offensive"
+  },
+
+  {
+    "task": "classification",
+    "question": "This is an awful and useless system!",
+    "expected_answer": "Offensive"
+  },
+  
+
 
   
   {
