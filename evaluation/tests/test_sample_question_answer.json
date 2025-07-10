@@ -40,7 +40,19 @@
   {
     "task": "qa",
     "question": "What is the full form of Faas?",
-    "expected_answer": "Faas stands for Function as a service."
+    "expected_answer": "Faas stands for Function-as-a-service."
+  },
+
+  {
+    "task": "qa",
+    "question": "What is JDBC?",
+    "expected_answer": "JDBC stands for Java Database Connectivity."
+  },
+
+  {
+    "task": "qa",
+    "question": "What is AWS Lambda?",
+    "expected_answer": "AWS Lambda is a serverless compute service that lets you run code in response to events without provisioning or managing servers."
   },
   
   {
@@ -57,9 +69,15 @@
 
   {
     "task": "summarization",
-    "question": "Summarize the JPA",
-    "expected_answer": "JPA (Java Persistence API) is a specification in Java for managing relational data in applications. It provides a framework for mapping Java objects to database tables and handling CRUD (Create, Read, Update, Delete) operations."
-  }
+    "question": "Summarize the Native mode of Firestore",
+    "expected_answer": "The default mode of firestore used in firebase projects and supports mobile and web SDKs. It helps with real time synchronization which gives real time updates across devices."
+  },
+
+  {
+    "task": "summarization",
+    "question": "Summarize the Middleware",
+    "expected_answer": "Middleware is software that acts as an intermediary between different applications or services. It enables communication and data management between disparate systems in a distributed environment."
+  },
 
   {
     "task": "summarization",
@@ -75,13 +93,19 @@
 
   {
     "task": "mcq",
-    "question": "Which is a Backend-as-a-service form options: a) Firestore b) Hibernate c) Firebase",
+    "question": "Which is a Backend-as-a-service form options: a) Firestore b) Hibernate c) Firebase d) Faas",
     "expected_answer": "c"
+  },
+
+  {
+    "task": "mcq",
+    "question": "Which one is a framework form options: a) Firestore b) Hibernate c) Firebase d) Faas",
+    "expected_answer": "b"
   },
   
   {
     "task": "mcq",
-    "question": "Which one is related to Firestore form options: a) Documents b) Hibernate c) Cloud d) App",
+    "question": "Which one is a parts of Firestore form options: a) Documents b) Hibernate c) Cloud d) App",
     "expected_answer": "a"
   },
 
