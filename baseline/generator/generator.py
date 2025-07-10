@@ -113,30 +113,34 @@ class Generator:
 
             return self.summ_tokenizer.decode(outputs[0], skip_special_tokens=True).strip()
 
-        if mode == "mcq":
-            print('options')
-            print(options)
+        elif mode == "mcq":
             inputs = self.mcq_tokenizer(prompt, return_tensors="pt", truncation=True, max_length=512, padding=True).to(self.device)
             with torch.no_grad():
                 outputs = self.mcq_model.generate(
                     **inputs,
-                    max_new_tokens=5,
-                    num_beams=1,
+                    max_new_tokens=max_tokens,
+                    do_sample=True,          # enables sampling instead of greedy
+                    top_k=50,                 # limits to top-k most likely next tokens
+                    top_p=0.9,                # nucleus sampling
+                    temperature=0.8,          # controls randomness
+                    num_return_sequences=1,
                     early_stopping=True
                 )
             result = self.mcq_tokenizer.decode(outputs[0], skip_special_tokens=True).strip().lower()
-
+            print(result)
+            # Extract letter a,b,c,d from the generated text
             valid_letters = [chr(97+i) for i in range(len(options))]
             if not valid_letters:
                 return "invalid"
-            pattern = r"\b([" + "".join(valid_letters) + r"])\b"
-            match = re.search(pattern, result)
+
+            match = re.search(r"\b([" + "".join(valid_letters) + r"])\b", result)
             if match:
                 return match.group(1)
 
+            # Fallback: see if option text mentioned
             for idx, option in enumerate(options):
-                if "enterprise edition" in option.lower():
-                    return chr(97+idx)
+                if option.lower() in result:
+                    return chr(97 + idx)
 
             return "invalid"
 

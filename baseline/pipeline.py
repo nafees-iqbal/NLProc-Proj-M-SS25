@@ -43,19 +43,19 @@ class Pipeline:
         This runs the pipeline like run_evaluation but for a single question.
         Returns dict with answer, context, prompt and writes to log.
         """
-        if '?' in question:
+        if "options" in question.lower():
+            task = "mcq"
+        elif '?' in question:
             task = "qa"
         elif re.search(r"\bsummariz(e|ation)\b", question, re.IGNORECASE):
             task = "summarization"
-        elif "options" in question.lower():
-            task = "mcq"
         else:
             task = "classification"
 
         if not context:
             print('task: ')
             print(task)
-            if task in ["qa", "classification", "summarization"]:
+            if task in ["qa", "classification", "summarization", "mcq"]:
                 print(question)
                 retrieved_chunks, _ = retriever.query(question, k=3)
                 context = "\n\n".join(retrieved_chunks)
@@ -67,8 +67,12 @@ class Pipeline:
 
         options = []
         if task == "mcq":
-            matches = re.findall(r'[a-dA-D]\)\s*([^\n]+)', question)
-            options = [match.strip() for match in matches]
+            parts = re.split(r'([a-dA-D]\))', question)
+            options = []
+            for i in range(1, len(parts)-1, 2):
+                option_text = parts[i+1].strip()
+                options.append(option_text)
+            print(options)
 
         prompt = generator.build_prompt(
             context=context,
@@ -80,15 +84,15 @@ class Pipeline:
         answer = generator.generate_answer(prompt, mode=task, options=options)
 
         if task == "mcq":
-            valid_letters = [chr(97+i) for i in range(len(options or []))]
+            valid_letters = [chr(97+i) for i in range(len(options))]
             answer = answer.strip().lower()
-            if answer not in valid_letters:
-                for letter in valid_letters:
-                    if letter in answer:
-                        answer = letter
-                        break
-                else:
-                    answer = "invalid"
+            # Try to find first valid letter in the generated answer
+            for letter in valid_letters:
+                if letter in answer:
+                    answer = letter
+                    break
+            else:
+                answer = "invalid"
 
         with open("evaluation/tests/test_sample_question_answer.json", "r", encoding="utf-8") as f:
             test_data = json.load(f)

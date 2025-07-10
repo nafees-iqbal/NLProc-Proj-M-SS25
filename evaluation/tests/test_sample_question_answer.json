@@ -224,7 +224,7 @@
     "task": "mcq",
     "question": "Which is not a HTTP method? options: a) Post b) PUT  c) DELETE d) Forward",
     "expected_answer": "d"
-  },
+  }
   
 ]
 
