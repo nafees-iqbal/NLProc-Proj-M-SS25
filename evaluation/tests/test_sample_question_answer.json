@@ -129,13 +129,13 @@
 
   {
     "task": "classification",
-    "question": "You are not helpful!",
+    "question": "This prompt is not helpful!",
     "expected_answer": "Offensive"
   },
 
   {
     "task": "classification",
-    "question": "You are useless!",
+    "question": "This is an useless system!",
     "expected_answer": "Offensive"
   },
 
