@@ -61,7 +61,7 @@ python -m spacy download en_core_web_sm
 python -m baseline.pipeline
 ```
 
-# Week 5
+# Final Week
 
 ## Let's first go through the paper `https://arxiv.org/pdf/2210.11416` where we find the ''Model Card for FLAN-T5 base''
 

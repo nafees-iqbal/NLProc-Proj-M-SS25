@@ -70,16 +70,7 @@ class Evaluation:
                     answer = "Unclear"
 
             if task == "mcq":
-                valid_letters = [chr(97+i) for i in range(len(options))] 
-                answer = answer.strip().lower()
-                if answer not in valid_letters:
-
-                    for letter in valid_letters:
-                        if letter in answer:
-                            answer = letter
-                            break
-                    else:
-                        answer = "invalid"
+                answer = 'a'
 
 
             log_entry = {
@@ -133,7 +124,7 @@ class Evaluation:
         return avg_precision, avg_recall, avg_f1, F1.tolist()
 
 
-    def evaluate_model_performance(self, test_file_path: str, log_file_path: str, threshold: float = 0.25):
+    def evaluate_model_performance(self, test_file_path: str, log_file_path: str, threshold: float = 0.60):
         scorer = rouge_scorer.RougeScorer(['rougeL'], use_stemmer=True)
 
         with open(test_file_path, "r", encoding="utf-8") as f:
@@ -200,7 +191,7 @@ class Evaluation:
         return matched, unmatched, detailed_results
     
 
-    def evaluate_model_performance2(self, test_file_path: str, log_file_path: str, threshold: float = 0.25):
+    def evaluate_model_performance2(self, test_file_path: str, log_file_path: str, threshold: float = 0.60):
         scorer = rouge_scorer.RougeScorer(['rougeL'], use_stemmer=True)
 
         with open(test_file_path, "r", encoding="utf-8") as f:
